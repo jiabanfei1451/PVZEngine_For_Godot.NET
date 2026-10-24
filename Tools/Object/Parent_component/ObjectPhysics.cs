@@ -52,7 +52,7 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 坐标类型
     /// </summary>
-    [Export] public MVZ2_City.Type.PositionType PositionType = MVZ2_City.Type.PositionType.GlobalPosition;
+    [Export] public PositionType PositionType = PositionType.GlobalPosition;
     /// <summary>
     /// 跟随当前重量增加加速度
     /// </summary>
@@ -114,7 +114,7 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 物体类型
     /// </summary>
-    [Export] public MVZ2.Type.ObjectType Object_Type = MVZ2.Type.ObjectType.Normal;
+    [Export] public ObjectType Object_Type = ObjectType.Normal;
     /// <summary>
     /// 对象内部ID
     /// </summary>
@@ -151,7 +151,7 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 不可放置类型
     /// </summary>
-    [Export] public Godot.Collections.Array<MVZ2.Type.ObjectType> Cannot_place_Type = new(){};
+    [Export] public Godot.Collections.Array<ObjectType> Cannot_place_Type = new(){};
     /// <summary>
     /// 可叠加放置
     /// </summary>
@@ -170,7 +170,7 @@ public partial class ObjectPhysics : Node2D
    
     internal void Reset_Position()
     {
-        if(PositionType == MVZ2_City.Type.PositionType.GlobalPosition){
+        if(PositionType == PositionType.GlobalPosition){
             practical_Position = GlobalPosition;
             Physics_Initialization = true;
         }
@@ -204,7 +204,7 @@ public partial class ObjectPhysics : Node2D
             Falling_Acceleration = 0;
             Height = min_Height;
         }
-        if (PositionType == MVZ2_City.Type.PositionType.GlobalPosition){
+        if (PositionType == PositionType.GlobalPosition){
             GlobalPosition = practical_Position - new Vector2(0,Height + Extra_Height);
         }
         else
@@ -319,7 +319,7 @@ public partial class ObjectPhysics : Node2D
     {
         if (Cheak.is_null<Level_Master_Script>(level))
         {
-            Level_Master_Script Get_Level = Game.Get_GlobalNode.Node_Data.Get_Node<Level_Master_Script>("Level");
+            Level_Master_Script Get_Level = PVZEngine.Static.NodeData.Get_Node<Level_Master_Script>("Level");
             if (Get_Level != null)
             {
                 level = Get_Level;

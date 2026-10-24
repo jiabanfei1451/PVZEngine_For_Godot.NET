@@ -133,7 +133,7 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     {
         base._ExitTree();
         if (!Enable){return;}
-        Game.Get_GlobalNode.Node_Data.Get_Node<Level_Master_Script>("Level").Remove_Lawn_Index(this,Lawn_Index);
+        NodeData.Get_Node<Level_Master_Script>("Level").Remove_Lawn_Index(this,Lawn_Index);
     }
     public override void _Ready() {
         base._Ready();

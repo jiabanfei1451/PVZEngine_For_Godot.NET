@@ -1,6 +1,7 @@
 using Godot;
 using PVZEngine.Type;
 using System;
+using PVZEngine.Static;
 using PVZEngine.Enum;
 namespace PVZEngine.Module;
 public partial class Object_List : Node
@@ -19,12 +20,12 @@ public partial class Object_List : Node
     public Godot.Collections.Array<PackedScene> Object_PackedScene = new(){};
     public override void _Ready() {
         base._Ready();
-        Game.Get_GlobalNode.object_List = this;
-        add_Object_Packed(Game.ResourceScene.LoadScene("uid://bx78lmkp8si7e"),"MVZ2:Zombies","僵尸");
-        add_Object_Packed(Game.ResourceScene.LoadScene("res://Object/Equipment/Transmitter.tscn"),"MVZ2:Transmitter","发射器");
-        add_Object_Packed(Game.ResourceScene.LoadScene("res://Object/Equipment/Furnace.tscn"),"MVZ2:Furnace","熔炉");
-        add_Object_Packed(Game.ResourceScene.LoadScene("res://Object/Equipment/Obsidian.tscn"),"MVZ2:Obsidian","黑曜石");
-        add_Object_Packed(Game.ResourceScene.LoadScene("res://Object/Equipment/Landmine.tscn"),"MVZ2:Landmine","地雷");
+        Get_GlobalNode.object_List = this;
+        add_Object_Packed(ResourceScene.LoadScene("uid://bx78lmkp8si7e"),"MVZ2:Zombies","僵尸");
+        add_Object_Packed(ResourceScene.LoadScene("res://Object/Equipment/Transmitter.tscn"),"MVZ2:Transmitter","发射器");
+        add_Object_Packed(ResourceScene.LoadScene("res://Object/Equipment/Furnace.tscn"),"MVZ2:Furnace","熔炉");
+        add_Object_Packed(ResourceScene.LoadScene("res://Object/Equipment/Obsidian.tscn"),"MVZ2:Obsidian","黑曜石");
+        add_Object_Packed(ResourceScene.LoadScene("res://Object/Equipment/Landmine.tscn"),"MVZ2:Landmine","地雷");
 
     }
     public void add_Object_Packed(PackedScene ObjectScene,String name,String CH_Name = "null")
@@ -40,7 +41,7 @@ public partial class Object_List : Node
     /// <returns></returns>
     public static PackedScene Get_Packed(ID ID_Object)
     {
-        var d = Game.Get_GlobalNode.object_List;
+        var d = Get_GlobalNode.object_List;
         Godot.Collections.Array<String> Object_Name_ID = d.Object_Name_ID;
         Godot.Collections.Array<PackedScene> Object_PackedScene = d.Object_PackedScene;
         Godot.Collections.Array<String> Object_CH_Name = d.Object_CH_Name;
@@ -66,7 +67,7 @@ public partial class Object_List : Node
     /// <returns></returns>
     public static ID Get_ID(String Index = "0",IndexMode indexMode = IndexMode.index)
     {
-        var d = Game.Get_GlobalNode.object_List;
+        var d = Get_GlobalNode.object_List;
         Godot.Collections.Array<String> Object_Name_ID = d.Object_Name_ID;
         Godot.Collections.Array<PackedScene> Object_PackedScene = d.Object_PackedScene;
         Godot.Collections.Array<String> Object_CH_Name = d.Object_CH_Name;

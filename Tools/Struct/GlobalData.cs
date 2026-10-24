@@ -1,4 +1,4 @@
-using System;
+using PVZEngine.Enum;
 using Godot;
 
 namespace PVZEngine.Data;
@@ -64,7 +64,7 @@ public struct GlobalData(){
     /// <summary>
     /// 物体类型
     /// </summary>
-    public MVZ2.Type.ObjectType Object_Type {get;set;} = MVZ2.Type.ObjectType.Normal;
+    public ObjectType Object_Type {get;set;} = ObjectType.Normal;
     /// <summary>
     /// 这是空值
     /// </summary>
@@ -80,13 +80,13 @@ public struct GlobalData(){
     /// </summary>
     /// <param name="Index"></param>
     /// <returns></returns>
-    public static MVZ2.Type.ObjectType GetObjectType(int Index)
+    public static ObjectType GetObjectType(int Index)
     {
-        MVZ2.Type.ObjectType[] types = new MVZ2.Type.ObjectType[]{
-        MVZ2.Type.ObjectType.Null,
-        MVZ2.Type.ObjectType.Normal,
-        MVZ2.Type.ObjectType.Bearing_unit,
-        MVZ2.Type.ObjectType.Monster};
+        ObjectType[] types = new ObjectType[]{
+        ObjectType.Null,
+        ObjectType.Normal,
+        ObjectType.Bearing_unit,
+        ObjectType.Monster};
         if (Index < types.Length)
         {
             return types[Index];

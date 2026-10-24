@@ -1,8 +1,7 @@
 using Touch;
 using Godot;
 using System.Threading.Tasks;
-using My_Csharp_Node;
-using PVZEngine.Object.Module;
+using PVZEngine.Module;
 using PVZEngine.Static;
 using DEBUG;
 using System;
@@ -155,7 +154,7 @@ public partial class Card : Control
 				if (button.Pressed && button.ButtonIndex == MouseButton.Right)
 				{
 					Cancel_Audio.Play();
-					Game.Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = null;
+					Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = null;
 				}
 			}
 	}
@@ -219,7 +218,7 @@ public partial class Card : Control
 				}
 				if (Cheak.is_null<Tween>(Temp_Tween)){
 					Temp_Tween = CreateTween();
-					Temp_Tween.TweenProperty(this,new NodePath(Control.PropertyName.GlobalPosition),Get_Parent_Object().GetChild<Control>(0).GetChild<Control>(0).GetChild<Control>(Game.Get_GlobalNode.Get_Card_Data(GetTree()).Get_Card_Index(this)).GlobalPosition,Easing_Time);
+					Temp_Tween.TweenProperty(this,new NodePath(Control.PropertyName.GlobalPosition),Get_Parent_Object().GetChild<Control>(0).GetChild<Control>(0).GetChild<Control>(Get_GlobalNode.Get_Card_Data(GetTree()).Get_Card_Index(this)).GlobalPosition,Easing_Time);
 				}
 				await Task.Delay(1000 / 60);
 			}
@@ -245,10 +244,10 @@ public partial class Card : Control
 					}
 				if (Selected_Index == -1)
 					{
-						Selected_Index = Game.Get_GlobalNode.Get_Card_Data(GetTree()).Get_Card_Index(this);
-						Info.Print("数组索引:",Selected_Index," 取值:",Game.Get_GlobalNode.Get_Card_Data(GetTree()).Selected_CD[Selected_Index]);
+						Selected_Index = Get_GlobalNode.Get_Card_Data(GetTree()).Get_Card_Index(this);
+						Info.Print("数组索引:",Selected_Index," 取值:",Get_GlobalNode.Get_Card_Data(GetTree()).Selected_CD[Selected_Index]);
 					}
-				if (Game.Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object == this)
+				if (Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object == this)
 				{
 					Modulate = new Color(0.5f,0.5f,0.5f,1);
 				}else
@@ -326,8 +325,8 @@ public partial class Card : Control
 				if (GlobalPosition.Y < 80){return;}
 				// 选定状态
 				if (Cheak.is_null<Card>(Mode_Data.Selected_Card_Mode.is_Selected_Card_Object)){
-					if (Game.Get_GlobalNode.Get_Card_Data(GetTree()).Get_Selected_Card_Len() > Game.Static.PlayerData.Card_Quantity - 1){return;}
-					PackedScene Temp_Scene = Game.ResourceScene.LoadScene("uid://c2y62prxcbege");
+					if (Get_GlobalNode.Get_Card_Data(GetTree()).Get_Selected_Card_Len() > PlayerData.Card_Quantity - 1){return;}
+					PackedScene Temp_Scene = ResourceScene.LoadScene("uid://c2y62prxcbege");
 					Card Temp_Card = Temp_Scene.Instantiate<Card>();
 					Temp_Card.Card_Mode = Mode.is_Seleceed_Card;
 					Temp_Card.Mode_Data = new ModeObject();
@@ -339,7 +338,7 @@ public partial class Card : Control
 					Get_Parent_Object().GetNode<Control>("Card").AddChild(Temp_Card);
 					Mode_Data.Selected_Card_Mode.is_Selected_Card_Object = Temp_Card;
 					CreateTween().TweenProperty(this,new NodePath(Control.PropertyName.Modulate),new Color(0.5f,0.5f,0.5f,1),0.5).SetTrans(Tween.TransitionType.Sine);
-					Game.Get_GlobalNode.Get_Card_Data(GetTree()).Add_Card_Index(Temp_Card);
+					Get_GlobalNode.Get_Card_Data(GetTree()).Add_Card_Index(Temp_Card);
 					Temp_Card.GlobalPosition = GlobalPosition;
 				}
 				else
@@ -352,7 +351,7 @@ public partial class Card : Control
 					Selected = true;
 					Tween t = CreateTween();
 					Tween d = CreateTween();
-					Game.Get_GlobalNode.Get_Card_Data(GetTree()).Remove_Card_Index(this);
+					Get_GlobalNode.Get_Card_Data(GetTree()).Remove_Card_Index(this);
 					t.TweenProperty(this,new NodePath(Control.PropertyName.Modulate),new Color(0,0,0,0),0.5).SetTrans(Tween.TransitionType.Sine);
 					d.TweenProperty(this.Mode_Data.is_Selected_Card_Mode.Parent_Object,new NodePath(Control.PropertyName.Modulate),new Color(1,1,1,1),0.5).SetTrans(Tween.TransitionType.Sine);
 					await ToSignal(t,Tween.SignalName.Finished);
@@ -369,7 +368,7 @@ public partial class Card : Control
 	#endregion
 	public Card Get_Selected_rawObject()
 	{
-		Card getCard = Game.Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object;
+		Card getCard = Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object;
 		return getCard;	
 	}
 	/// <summary>
@@ -416,16 +415,16 @@ public partial class Card : Control
 			{
 				Cancel_Audio = GetNode<Audio_Plus>("Cancel");
 			}
-		if (Game.Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object != this){
+		if (Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object != this){
 			Level_Master_Script level = (Level_Master_Script)GetTree().CurrentScene;
 			level.Selected_Lawn = null;
-			Game.Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = this;
+			Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = this;
 			Selected_Audio.Play();
 		}
 		else
 		{
 			Cancel_Audio.Play();
-			Game.Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = null;
+			Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = null;
 		}
 	}
 	/// <summary>

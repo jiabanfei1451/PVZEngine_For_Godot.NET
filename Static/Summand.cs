@@ -1,10 +1,7 @@
-using Game;
 using Godot;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using MVZ2_City.Type;
-using Data;
 using PVZEngine.Data;
 using PVZEngine.Module;
 using PVZEngine.Enum;
@@ -79,17 +76,17 @@ public static class Summand
                 String layer = Instantiate.Default_generation_layer;
                 if (layer != "")
                 {
-                    Get_Node = Game.Get_GlobalNode.Node_Data.Get_Node<Node2D>(Instantiate.Default_generation_layer);
+                    Get_Node = NodeData.Get_Node<Node2D>(Instantiate.Default_generation_layer);
                 }
                 if (Cheak.is_null<Node2D>(Get_Node))
                 {
                     if (Instantiate.IsInGroup("Monster"))
                     {
-                        Get_Node = Game.Get_GlobalNode.Node_Data.Get_Node<Node2D>("Monster");
+                        Get_Node = NodeData.Get_Node<Node2D>("Monster");
                     }
                     else
                     {
-                        Get_Node = Game.Get_GlobalNode.Node_Data.Get_Node<Node2D>("Equipment");
+                        Get_Node = NodeData.Get_Node<Node2D>("Equipment");
                     }
                 }
                 if (Data.delay_Summand == false){

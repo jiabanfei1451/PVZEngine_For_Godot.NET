@@ -1,13 +1,11 @@
-using Game;
 using Godot;
 using System;
-using My_Csharp_Node;
+using PVZEngine.Module;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using NETDNS;
 using PVZEngine.Data;
-using Game.Static;
 using PVZEngine.UI;
+using PVZEngine.Enum;
 using PVZEngine.Object;
 using PVZEngine.Object.Module;
 using PVZEngine.Static;
@@ -197,20 +195,20 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	public async void choose_Card()
     {
-		var s = Game.Get_GlobalNode.Node_Data.Get_Node<CanvasLayer>("Current_Level_UI", Get_GlobalNode.Node_Data.Mode_Type.Name);
+		var s = NodeData.Get_Node<CanvasLayer>("Current_Level_UI", NodeData.Mode_Type.Name);
 		if (s != null)
 		{
 			s.QueueFree();
 		}
-		Game.Get_GlobalNode.Node_Data.Remove_Node("Current_Level_UI", Get_GlobalNode.Node_Data.Mode_Type.Name);
-		Game.Get_GlobalNode.Node_Data.Screening_Not_Null_Node();
+		NodeData.Remove_Node("Current_Level_UI", NodeData.Mode_Type.Name);
+		NodeData.Screening_Not_Null_Node();
 
 		Touch.Touch_Index.clear();
 		Touch.Touch_Index.Set_Index_Enable("pickaxe",false);
-		Game.Get_GlobalNode.Get_Card_Data(GetTree()).Initialization();
+		Get_GlobalNode.Get_Card_Data(GetTree()).Initialization();
 		Tween Twee = CreateTween();
-        PackedScene Scene = Game.ResourceScene.LoadScene("uid://bllinxtvttldn");
-		Game.Get_GlobalNode.Get_Muisc_Engine(GetTree()).new_playMuisc("CH:选卡");
+        PackedScene Scene = ResourceScene.LoadScene("uid://bllinxtvttldn");
+		Get_GlobalNode.Get_Muisc_Engine(GetTree()).new_playMuisc("CH:选卡");
 		Camera2D_Zoom = new Godot.Vector2(1.1f,1.1f);
         Twee.TweenProperty(this,new Godot.NodePath(PVZEngine.Level_Master_Script.PropertyName.Camera2D_Position),new Vector2(140,-25),1);
 		await ToSignal(Twee,Tween.SignalName.Finished);
@@ -225,28 +223,28 @@ public partial class Level_Master_Script : Node2D{
 		Audio_Plus s = new Audio_Plus();
 		s.Audio_Type = Audio_Plus.Audio.Souds;
 		s.Auto_QueneFree = true;
-		s.Stream = Game.Get_GlobalNode.Get_Audio_List(GetTree()).Get_Souds("MVZ2:Ready");
+		s.Stream = Get_GlobalNode.Get_Audio_List(GetTree()).Get_Souds("MVZ2:Ready");
 		AddChild(s);
 		s.Play();
-		await Game.Tip.Set_Ready_Text(true,0.5d,true,2,1,"好!");
+		await Tip.Set_Ready_Text(true,0.5d,true,2,1,"好!");
 		await Task.Delay(500);
-		await Game.Tip.Set_Ready_Text(true,0.5d,true,2,1,"准备!");
+		await Tip.Set_Ready_Text(true,0.5d,true,2,1,"准备!");
 		await Task.Delay(500);
-		await Game.Tip.Set_Ready_Text(true,0.5d,true,2,1,"安放器械!!!");
+		await Tip.Set_Ready_Text(true,0.5d,true,2,1,"安放器械!!!");
 		await Task.Delay(1000);
-		Game.Tip.Set_Ready_Text("");
-		Game.Get_GlobalNode.Get_Muisc_Engine(GetTree()).new_playMuisc(((PVZEngine.Level_Master_Script)GetTree().CurrentScene).Level_BGMID);
-		Game.Get_GlobalNode.Get_Card_Data(GetTree()).CD_Initialization();
-		if (Game.Get_GlobalNode.Node_Data.Get_Node<UIObject.LevelUi>("LevelUI") != null){
-			Game.Get_GlobalNode.Node_Data.Get_Node<UIObject.LevelUi>("LevelUI")?.Card_Initialization();
+		Tip.Set_Ready_Text("");
+		Get_GlobalNode.Get_Muisc_Engine(GetTree()).new_playMuisc(((PVZEngine.Level_Master_Script)GetTree().CurrentScene).Level_BGMID);
+		Get_GlobalNode.Get_Card_Data(GetTree()).CD_Initialization();
+		if (NodeData.Get_Node<UIObject.LevelUi>("LevelUI") != null){
+			NodeData.Get_Node<UIObject.LevelUi>("LevelUI")?.Card_Initialization();
 		}
-		if (Game.Get_GlobalNode.Node_Data.Get_Node<Control>("LevelUI2", Get_GlobalNode.Node_Data.Mode_Type.Name) != null){
-			Game.Get_GlobalNode.Node_Data.Get_Node<Control>("LevelUI2", Get_GlobalNode.Node_Data.Mode_Type.Name).QueueFree();
+		if (NodeData.Get_Node<Control>("LevelUI2", NodeData.Mode_Type.Name) != null){
+			NodeData.Get_Node<Control>("LevelUI2", NodeData.Mode_Type.Name).QueueFree();
 		}
 		Touch.Touch_Index.Set_Index_Enable("Card",true);
 		Touch.Touch_Index.Set_Index_Enable("pickaxe",true);
-		if (Game.Get_GlobalNode.Node_Data.Get_Node<UIObject.LevelUi>("LevelUI2") != null){
-			Game.Get_GlobalNode.Node_Data.Get_Node<UIObject.LevelUi>("LevelUI2").QueueFree();
+		if (NodeData.Get_Node<UIObject.LevelUi>("LevelUI2") != null){
+			NodeData.Get_Node<UIObject.LevelUi>("LevelUI2").QueueFree();
 		}
 	}
 	/// <summary>
@@ -254,8 +252,8 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	public async void Completed_Selected_Card()
 	{
-		Game.Get_GlobalNode.Node_Data.Get_Node<Node2D>("Equipment").YSortEnabled = true;
-		Game.Get_GlobalNode.Node_Data.Get_Node<Node2D>("Monster").YSortEnabled = true;
+		NodeData.Get_Node<Node2D>("Equipment").YSortEnabled = true;
+		NodeData.Get_Node<Node2D>("Monster").YSortEnabled = true;
 		Tween Twee = CreateTween();
 		Twee.TweenProperty(this,new Godot.NodePath(Level_Master_Script.PropertyName.Camera2D_Position),new Vector2(-105,-25),1);
 		await ToSignal(Twee,Tween.SignalName.Finished);
@@ -280,32 +278,10 @@ public partial class Level_Master_Script : Node2D{
 			Level_Script.Equipment_Capable = p;
 		}else if(Seed_Why.IndexOf("/GetData") != -1)
 		{
-			DEBUG.Info.Print(Game.Static.PlayerData.Player_Data);
+			DEBUG.Info.Print(PlayerData.Player_Data);
 		}else if(Seed_Why.IndexOf("/SaveInfo") != -1)
 		{
 			DEBUG.Info.Save_Info("C:\\Info.txt");
-		}else if(Seed_Why.IndexOf("/CreateServer") != -1)
-		{
-			Server.Create_Server();
-		}else if(Seed_Why.IndexOf("/Join") != -1)
-		{
-			Server.Join_Server();
-		}else if(Seed_Why.IndexOf("/OffServer") != -1)
-		{
-			Server.Off_Server();
-		}else if(Seed_Why.IndexOf("/Save") != -1)
-		{
-		}
-		if (Server.Server_Stream != null)
-		{
-			if (Server.TCPServer != null)
-			{
-				Server.Server_Send_Data(Seed_Why);
-			}
-			else
-			{
-				Server.Player_Send_Data(Seed_Why);
-			}
 		}
 	}
 	#region 草坪方法
@@ -318,9 +294,9 @@ public partial class Level_Master_Script : Node2D{
 		Card_Data card_Data = Get_GlobalNode.Get_Card_Data(GetTree());
 		if (Cheak.is_null<Card_Data>(card_Data)){return;}
 		if (Cheak.is_null<Card>(card_Data.Selected_raw_Object)){return;}
-		if (Game.Static.PlayerData.Temp_Card != card_Data.Selected_raw_Object){
-			Game.Static.PlayerData.Temp_Card = card_Data.Selected_raw_Object;
-			PlayerData.Temp_CardObject = Game.Static.PlayerData.Temp_Card.Mode_Data.gameing_Mode.Card_Data.Scene.Instantiate<LevelObject>();
+		if (PlayerData.Temp_Card != card_Data.Selected_raw_Object){
+			PlayerData.Temp_Card = card_Data.Selected_raw_Object;
+			PlayerData.Temp_CardObject = PlayerData.Temp_Card.Mode_Data.gameing_Mode.Card_Data.Scene.Instantiate<LevelObject>();
 		}
 		foreach (var Arra in Lawn_Data)
 		{
@@ -369,8 +345,8 @@ public partial class Level_Master_Script : Node2D{
 	/// <param name="lawn"></param>
 	public void Lawn_Current_Color(Lawn lawn)
 	{
-		Card_Data data = Game.Get_GlobalNode.Get_Card_Data(GetTree());
-		MVZ2.Type.ObjectType Types = data.Selected_raw_Object.Mode_Data.gameing_Mode.Card_Data.Object_Type;
+		Card_Data data = Get_GlobalNode.Get_Card_Data(GetTree());
+		ObjectType Types = data.Selected_raw_Object.Mode_Data.gameing_Mode.Card_Data.Object_Type;
 		if (Cheak.is_null<LevelObject>(lawn.Current_Object.Has_Key_Object(Types.ToString())) && lawn.Current_Object.Cheak_Cannot_Placed())
 		{
 			lawn.Color = new Color(1,1,1,0.5f);
@@ -576,9 +552,9 @@ public partial class Level_Master_Script : Node2D{
 		base._Ready();
 		Reset_Lawn_Index();
 		Level_Script.Level_Object = this;
-		LawnScene = Game.ResourceScene.LoadScene("uid://dim8rk13omwvv");
-		Game.Get_GlobalNode.Node_Data.Clear_Node();
-		Game.Get_GlobalNode.Node_Data.Add_Node(this,"Level");
+		LawnScene = ResourceScene.LoadScene("uid://dim8rk13omwvv");
+		NodeData.Clear_Node();
+		NodeData.Add_Node(this,"Level");
 		summand_Node();
 		await Task.Delay(100);
 		if (Cheak.is_null<Camera2D>(Camera2D))
@@ -588,7 +564,7 @@ public partial class Level_Master_Script : Node2D{
 			Camera2D.Offset = Camera2D_Offset;
 			Camera2D.Zoom = Camera2D_Zoom;
 			AddChild(Camera2D);
-			Game.Get_GlobalNode.Node_Data.Add_Node(Camera2D,"Camera2D");
+			NodeData.Add_Node(Camera2D,"Camera2D");
 		}
 		Lawn_Node = GetNode<Node2D>("Lawn");
 		Lawn_Data.Resize(Lawn_Array.Count);
@@ -610,7 +586,7 @@ public partial class Level_Master_Script : Node2D{
 			Node Get_Node = GetNodeOrNull(Node_Index[Name_Index]);
 			if (Get_Node != null)
 			{
-				Game.Get_GlobalNode.Node_Data.Add_Node(Get_Node,Node_Index[Name_Index]);
+				NodeData.Add_Node(Get_Node,Node_Index[Name_Index]);
 			}
 			//否则生成
 			else
@@ -621,14 +597,14 @@ public partial class Level_Master_Script : Node2D{
 						Get_Node = new Node2D();
 						Get_Node.Name = Node_Index[Name_Index];
 						AddChild(Get_Node);
-						Game.Get_GlobalNode.Node_Data.Add_Node(Get_Node,Node_Index[Name_Index]);
+						NodeData.Add_Node(Get_Node,Node_Index[Name_Index]);
 						break;
 					case 1:
 						// 生成SubViewprot
 						Get_Node = new SubViewport();
 						Get_Node.Name = Node_Index[Name_Index];
 						AddChild(Get_Node);
-						Game.Get_GlobalNode.Node_Data.Add_Node(Get_Node,Node_Index[Name_Index]);
+						NodeData.Add_Node(Get_Node,Node_Index[Name_Index]);
 						// SubViewport设置
 						SubViewport viewport = (SubViewport)Get_Node; // 转换
 						Get_Node = new Sprite2D(); //生成纹理承载节点
@@ -637,14 +613,14 @@ public partial class Level_Master_Script : Node2D{
 						viewport.TransparentBg = true;
 						Get_Node.Name = Node_Index[Name_Index] + "Sprite2D"; //继承纹理名称
 						AddChild(Get_Node);
-						Game.Get_GlobalNode.Node_Data.Add_Node(Get_Node,Node_Index[Name_Index]); //注册名称
+						NodeData.Add_Node(Get_Node,Node_Index[Name_Index]); //注册名称
 						sprite.Texture = texture; //获取纹理
 						break;
 					case 2:
 						Get_Node = new CanvasGroup();
 						Get_Node.Name = Node_Index[Name_Index];
 						AddChild(Get_Node);
-						Game.Get_GlobalNode.Node_Data.Add_Node(Get_Node,Node_Index[Name_Index]);
+						NodeData.Add_Node(Get_Node,Node_Index[Name_Index]);
 						break;
 				}
 			
@@ -658,6 +634,5 @@ public partial class Level_Master_Script : Node2D{
 				}
 			}
 		}
-		DEBUG.Info.Print(Game.Get_GlobalNode.NodeData);
 	}
 }
