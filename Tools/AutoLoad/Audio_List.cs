@@ -214,11 +214,11 @@ public partial class Audio_List : Node
 		{
 			ListIndex = ((Godot.Collections.Array<String>)Souds_list[1]).IndexOf(What);
 		}
-		audio = SoudsResearch[ListIndex];
 		if (ListIndex == -1)
 		{
 			throw(new ArgumentOutOfRangeException("当前索引不存在！请检查是否存在相关的中文名与内部名"));
 		}
+		audio = SoudsResearch[ListIndex];
 		return audio;
 	}
 	/// <summary>

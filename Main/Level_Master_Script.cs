@@ -282,6 +282,9 @@ public partial class Level_Master_Script : Node2D{
 		}else if(Seed_Why.IndexOf("/SaveInfo") != -1)
 		{
 			DEBUG.Info.Save_Info("C:\\Info.txt");
+		}else if(Seed_Why.IndexOf("/Star") != -1)
+		{
+			Level_Script.Star_Fragment = 5;
 		}
 	}
 	#region 草坪方法

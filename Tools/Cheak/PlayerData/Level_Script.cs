@@ -44,7 +44,11 @@ static class Level_Script : System.Object
 		/// <summary>
 		/// 星之碎片
 		/// </summary>
-		Star_Fragment = 1
+		Star_Fragment = 1,
+		/// <summary>
+		/// 器械能
+		/// </summary>
+		Equipment_capable = 2
 	}
 	public enum Calculation_Type
 	{
