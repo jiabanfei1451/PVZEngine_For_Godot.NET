@@ -56,6 +56,17 @@ static class Level_Script : System.Object
 		Remove = 1,
 		Selection = 2,
 	}
+	public static void Set_Use_porp(Prop prop)
+	{
+		if (Use_Prop != prop)
+		{
+			Use_Prop = prop;
+		}
+		else
+		{
+			Use_Prop = Prop.Not;
+		}
+	}
 	/// <summary>
 	/// 初始化
 	/// </summary>

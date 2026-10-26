@@ -109,6 +109,15 @@ public static class Summand
             }
         }
         Data.Summand_ing = false;
+        set_Timer();
+    }
+    public async static void set_Timer()
+    {
+        while(Data.Await_Next_Wave_Timer > 0 && Data.Summand_ing == false && Data.Current_WaveTag == WaveTag.Normal && Data.Is_Final_Wave == false)
+        {
+            await Task.Delay(200);
+            Data.Await_Next_Wave_Timer -= 0.2f * (float)Engine.TimeScale;
+        }
     }
     /// <summary>
     /// 条件判断生成

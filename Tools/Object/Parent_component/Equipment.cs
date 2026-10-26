@@ -1,3 +1,4 @@
+using System;
 using Game;
 using Godot;
 using PVZEngine.Data;
@@ -51,11 +52,19 @@ public partial class Equipment : LevelObject
     /// <summary>
     /// 放置音效组
     /// </summary>
-    [Export] public Godot.Collections.Array<AudioStream> PlacedAudios = new(){};
+    [ExportGroup("Misc")][Export] public Godot.Collections.Array<AudioStream> PlacedAudios = new(){};
     /// <summary>
     /// 死亡音效组
     /// </summary>
     [Export] public Godot.Collections.Array<AudioStream> KillAudios = new(){};
+    /// <summary>
+    /// 激活特效路径
+    /// </summary>
+    [Export] public String Activate_Effect_Path = "res://Object/Effect/Activate/evocation_star.tscn";
+    /// <summary>
+    /// 激活特效偏移
+    /// </summary>
+    [Export] public Godot.Vector2 Activate_Effect_Offset;
     /// <summary>
     /// 已激活
     /// </summary>
@@ -173,6 +182,11 @@ public partial class Equipment : LevelObject
                     audio.Auto_Get_File = false;
                     audio.Stream = PVZEngine.Static.Get_GlobalNode.Get_Audio_List(GetTree()).Get_Souds("CH:激发器械");
                     audio.Autoplay = true;
+                    PackedScene GetEffect = PVZEngine.ResourceScene.LoadScene(Activate_Effect_Path);
+                    Node2D Effect_CanvasLayer = PVZEngine.Static.NodeData.Get_Node<Node2D>("Effect");
+                    Node2D Effect_Node = GetEffect.Instantiate<Node2D>();
+                    Effect_CanvasLayer.AddChild(Effect_Node);
+                    Effect_Node.GlobalPosition = GlobalPosition + Activate_Effect_Offset;
                     GetTree().CurrentScene.AddChild(audio);
                     audio.Play();
                     EmitSignalActivate_Equipment();
