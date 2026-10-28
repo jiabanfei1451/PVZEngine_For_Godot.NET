@@ -75,26 +75,33 @@ public partial class BulletData : ObjectPhysics
     {
         if (Check_Object.IndexOf(data_object) != -1){return;}
         Check_Object.Add(data_object);
+        EmitSignal("Object_Join",data_object);
     }
     public void Remove_Check_Object(LevelObject data_object)
     {
         Check_Object.Remove(data_object);
+        EmitSignal("Object_Exit",data_object);
     }
     internal void Join(Node2D node)
     {
         if (node is LevelObject){
             bool Cheak = Game.Cheak.CheakGroup.Cheak_Object_Group(node,detection_Group,Exclude_Group);
+            ObjectPhysics objectPhysics = (ObjectPhysics)node;
+            bool Height_Cheak = Cheak_Height(objectPhysics);
+            bool Height_Level_Cheak = Cheak_HeightLevel(objectPhysics);
             if (!Cheak){return;}
-            Add_Check_Object((LevelObject)node);
-            EmitSignal("Object_Join",node);
+            if (Height_Cheak && Height_Level_Cheak){
+                LevelObject levelObject = (LevelObject)node;
+                Add_Check_Object(levelObject);
+            }
         }
     }
     internal void Exit(Node2D node)
     {
         if (node is LevelObject)
         {
-            Remove_Check_Object((LevelObject)node);
-            EmitSignal("Object_Exit",node);
+            LevelObject levelObject = (LevelObject)node;
+            Remove_Check_Object(levelObject);
         }
     }
 }

@@ -26,7 +26,7 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	/// <param name="Data_Object"></param>
 	[Signal]
-	public delegate void Object_Change_LineEventHandler(LevelObject Data_Object);
+	public delegate void Object_Change_LineEventHandler(ObjectPhysics Data_Object);
 	/// <summary>
 	/// 物体高度变更时
 	/// </summary>
@@ -41,11 +41,11 @@ public partial class Level_Master_Script : Node2D{
 	/// 节点生成
 	/// </summary>
 	[ExportGroup("Layer")]
-	[Export] public String[] Node_Index {get;set;} = ["shadow","Equipment","Monster","Shoot","particle","Effect","Light","item"];
+	[Export] public String[] Node_Index {get;set;} = ["Shadow","Equipment","Monster","Shoot","particle","Effect","Light","Item"];
 	/// <summary>
 	/// 图层分配
 	/// </summary>
-	[Export] public int[] Layer_Index {get;set;} = [1,2,3,3,4,5,6,9];
+	[Export] public int[] Layer_Index {get;set;} = [0,2,3,3,4,5,6,9];
 	/// <summary>
 	/// 类型分配
 	/// 0 = Node,
@@ -577,6 +577,7 @@ public partial class Level_Master_Script : Node2D{
 			Summand_Lawn();
 		}
 		Game_Reset_Done = true;
+		NodeData.Get_Node<Node2D>("Shadow").Modulate = new(1,1,1,0.7f);
 	}
 	/// <summary>
 	/// 生成节点(差不多就是初始化)

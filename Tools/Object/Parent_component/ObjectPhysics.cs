@@ -2,6 +2,7 @@ using Godot;
 using System;
 using PVZEngine.Enum;
 using PVZEngine.Static;
+using System.Text;
 namespace PVZEngine.Object.Module;
 [Icon("uid://dwrrtr5iyf6yq")]
 public partial class ObjectPhysics : Node2D
@@ -62,6 +63,10 @@ public partial class ObjectPhysics : Node2D
     /// </summary>
     [Export] public float Falling_Acceleration = 1;
     /// <summary>
+    /// 检测高度偏移（用于校准）
+    /// </summary>
+    [Export] public float Cheak_Height_Offset = 0;
+    /// <summary>
     /// 高度
     /// </summary>
     [Export] public float Height = 0;
@@ -82,6 +87,18 @@ public partial class ObjectPhysics : Node2D
     /// </summary>
     [Export] public Godot.Vector2 practical_Position = new Godot.Vector2();
     /// <summary>
+    /// 加速度
+    /// </summary>
+    [Export] public float Acceleration = 10;
+    /// <summary>
+    /// 物理已完成初始化
+    /// </summary>
+    [Export] internal bool Physics_Initialization = false;
+    /// <summary>
+    /// 阴影场景
+    /// </summary>
+    [ExportGroup("Shadow")][Export] public PackedScene ShadowScene = PVZEngine.ResourceScene.LoadScene("uid://2sgut6k4shoy");
+    /// <summary>
     /// 阴影
     /// </summary>
     [Export] public Node2D Shadow = null;
@@ -96,19 +113,11 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 阴影尺寸
     /// </summary>
-    [Export] public Godot.Vector2 Shadow_Size = Vector2.Zero;
+    [Export] public Godot.Vector2 Shadow_Size = new(1,1);
     /// <summary>
     /// 阴影偏移
     /// </summary>
     [Export] public Godot.Vector2 Shadow_Offset = Vector2.Zero;
-    /// <summary>
-    /// 加速度
-    /// </summary>
-    [Export] public float Acceleration = 10;
-    /// <summary>
-    /// 物理已完成初始化
-    /// </summary>
-    [Export] internal bool Physics_Initialization = false;
     /// <summary>
     /// 临时坐标
     /// </summary>
@@ -175,7 +184,13 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 重置物理坐标
     /// </summary>
-   
+    public override void _ExitTree() {
+        base._ExitTree();
+        if (!Cheak.is_null<Node2D>(Shadow))
+        {
+            Shadow.QueueFree();
+        }
+    }
     internal void Reset_Position()
     {
         if(PositionType == PositionType.GlobalPosition){
@@ -192,34 +207,78 @@ public partial class ObjectPhysics : Node2D
     /// </summary>
     /// <param name="delta"></param>
     public void SetPhysics_Position(double delta) {
-        float FloatDelta = (float)delta;
-        if (!Physics_Enable){return;}
-        if (!Physics_Initialization){return;}
-        if (Height > min_Height)
-        {
-            if (Follow_the_current_weight == true){
-                Falling_Acceleration += Weight * Acceleration * FloatDelta;
+        try{
+            float FloatDelta = (float)delta;
+            if (!Physics_Enable){return;}
+            if (!Physics_Initialization){return;}
+            if (Cheak.is_null<Node2D>(Shadow))
+            {
+                Shadow = ShadowScene.Instantiate<Node2D>();
+                Shadow.Visible = false;
+                float Shadow_Scale_X = 0.2f * Shadow_Size.X;
+                float Shadow_Scale_Y = 0.125f * Shadow_Size.Y;
+                
+                if (Height / (20 / Shadow_SizeMultiplication.X) > 1)
+                {
+                    Shadow_Scale_X /= Height / (20 / Shadow_SizeMultiplication.X);
+                }
+                if (Height / (20 / Shadow_SizeMultiplication.Y) > 1)
+                {
+                    Shadow_Scale_Y /= Height / (20 / Shadow_SizeMultiplication.Y);
+                }
+                NodeData.Get_Node<CanvasGroup>("Shadow").AddChild(Shadow);
             }
             else
             {
-                Falling_Acceleration += Acceleration * FloatDelta;
+                Shadow.Visible = true;
+                float Shadow_Scale_X = 0.2f * Shadow_Size.X;
+                float Shadow_Scale_Y = 0.125f * Shadow_Size.Y;
+                if (Height / (20 / Shadow_SizeMultiplication.X) > 1)
+                {
+                    Shadow_Scale_X /= Height / (20 / Shadow_SizeMultiplication.X);
+                }
+                if (Height / (20 / Shadow_SizeMultiplication.Y) > 1)
+                {
+                    Shadow_Scale_Y /= Height / (20 / Shadow_SizeMultiplication.Y);
+                }
+                Shadow.Scale = new(Shadow_Scale_X,Shadow_Scale_Y);
+                if (PositionType == PositionType.localPosition)
+                {
+                    Shadow.Position = practical_Position + Shadow_Offset;
+                }
+                else
+                {
+                    Shadow.GlobalPosition = practical_Position + Shadow_Offset;
+                }
             }
-            Height -= Falling_Acceleration;
-        }
+            if (Height > min_Height)
+            {
+                if (Follow_the_current_weight == true){
+                    Falling_Acceleration += Weight * Acceleration * FloatDelta;
+                }
+                else
+                {
+                    Falling_Acceleration += Acceleration * FloatDelta;
+                }
+                Height -= Falling_Acceleration;
+            }
 
-        if(Height < min_Height)
+            if(Height < min_Height)
+            {
+                Falling_Acceleration = 0;
+                Height = min_Height;
+            }
+            if (PositionType == PositionType.GlobalPosition){
+                GlobalPosition = practical_Position - new Vector2(0,Height + Extra_Height);
+            }
+            else
+            {
+                Position = practical_Position - new Vector2(0,Height + Extra_Height);
+            }
+        }catch(Exception EX)
         {
-            Falling_Acceleration = 0;
-            Height = min_Height;
+            DEBUG.Info.Print(EX);
         }
-        if (PositionType == PositionType.GlobalPosition){
-            GlobalPosition = practical_Position - new Vector2(0,Height + Extra_Height);
-        }
-        else
-        {
-            Position = practical_Position - new Vector2(0,Height + Extra_Height);
-        }
-
     }
     /// <summary>
     /// 检测高度等级
@@ -243,7 +302,11 @@ public partial class ObjectPhysics : Node2D
         }
         if ((physics.Height + physics.Extra_Height) > Max_Height)
         {
-            Extra_Height_Level = (physics.Height + physics.Extra_Height) / Max_Height;
+            Extra_Height_Level = (physics.Height + physics.Extra_Height + physics.Cheak_Height_Offset) / Max_Height;
+        }
+        if ((physics.Height + physics.Extra_Height) < Min_Heigit)
+        {
+            Extra_Height_Level -= (physics.Height + physics.Extra_Height + physics.Cheak_Height_Offset) / Max_Height;
         }
         float Max_Height_Level = Cheak_Height_Level_Scoop.Y + Height_Level;
         float Min_Height_Level = Cheak_Height_Level_Scoop.X + Height_Level;
@@ -270,7 +333,7 @@ public partial class ObjectPhysics : Node2D
         if (Cheak.is_null<ObjectPhysics>(physics)){return false;}
         float Min_Heigit = Cheak_Height_Scoop.X + Height + Extra_Height;
         float Max_Height = Cheak_Height_Scoop.Y + Height + Extra_Height;
-        float Current_Height = physics.Height + physics.Extra_Height;
+        float Current_Height = physics.Height + physics.Cheak_Height_Offset + physics.Extra_Height;
         if (Min_Heigit >= Max_Height)
         {
             float Temp = Min_Heigit;
@@ -289,9 +352,9 @@ public partial class ObjectPhysics : Node2D
     /// </summary>
     /// <param name="CheakObject"></param>
     /// <returns></returns>
-    public bool Cheak_Lawn_Index(LevelObject CheakObject)
+    public bool Cheak_Lawn_Index(ObjectPhysics CheakObject)
     {
-        if (Cheak.is_null<LevelObject>(CheakObject)){return false;}
+        if (Cheak.is_null<ObjectPhysics>(CheakObject)){return false;}
         int Object_ScoopX = CheakObject.Cheak_Index_Scoop.X;
         int Object_ScoopY = CheakObject.Cheak_Index_Scoop.Y;
         if (Object_ScoopY > Object_ScoopX)

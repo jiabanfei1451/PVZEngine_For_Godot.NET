@@ -161,7 +161,7 @@ public partial class Card_Data : Node
 		int dex = -1;
 		foreach(Control control in Selected)
 		{
-			if(control != null)
+			if(!Cheak.is_null<Control>(control))
 			{
 				dex += 1;
 			}
@@ -176,7 +176,7 @@ public partial class Card_Data : Node
 		Godot.Collections.Array variants = [];
 		foreach (Control node in Selected)
 		{
-			if (node != null)
+			if (!Cheak.is_null<Control>(node))
 			{
 				variants.Add(node);
 			}

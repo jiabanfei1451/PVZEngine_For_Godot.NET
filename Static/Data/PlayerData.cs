@@ -9,6 +9,10 @@ namespace PVZEngine.Data;
 public static class PlayerData : System.Object
 {
     /// <summary>
+    /// 名称
+    /// </summary>
+    public static String Name = "痊愈加班费";
+    /// <summary>
     /// 最大卡槽数量 实际值是当前值 + 1
     /// </summary>
     public static int Card_Quantity = 5;

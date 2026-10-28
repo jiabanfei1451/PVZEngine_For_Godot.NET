@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using DEBUG;
 using Godot;
 using PVZEngine.Static;
+using PVZEngine.Static.Default;
 namespace PVZEngine.Object.Module;
 [Icon("uid://5pmb3whr0b70")]
 /// <summary>
@@ -122,11 +123,11 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     /// <summary>
     /// 检测阵营
     /// </summary>
-    [Export]public Godot.Collections.Array<StringName> detection_Group = new Godot.Collections.Array<StringName>(){};
+    [Export]public Godot.Collections.Array<StringName> detection_Group = LevelCheckdefault.defaultDetection_Group();
     /// <summary>
     /// 排除阵营
     /// </summary>
-    [Export] public Godot.Collections.Array<StringName> Exclude_Group = new Godot.Collections.Array<StringName>(){"Projectile","Area"};
+    [Export] public Godot.Collections.Array<StringName> Exclude_Group = LevelCheckdefault.defaultExclude_Group();
     public Level_Master_Script Level_Object = null;
     internal bool Connect_Kill_Signal = false;
     public override void _ExitTree()
