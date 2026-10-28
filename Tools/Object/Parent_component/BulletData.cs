@@ -7,10 +7,24 @@ namespace PVZEngine.Object.Module;
 /// </summary>
 public partial class BulletData : ObjectPhysics
 {
+    /// <summary>
+    /// 物体进入时
+    /// </summary>
+    /// <param name="node"></param>
     [Signal] public delegate void Object_JoinEventHandler(Node2D node);
+    /// <summary>
+    /// 物体离开时
+    /// </summary>
+    /// <param name="node"></param>
     [Signal] public delegate void Object_ExitEventHandler(Node2D node);
+    /// <summary>
+    /// 检测阵营
+    /// </summary>
     [ExportGroup("Cheak_Group")]
     [Export] public Godot.Collections.Array<StringName> detection_Group = new Godot.Collections.Array<StringName>();
+    /// <summary>
+    /// 排除阵营
+    /// </summary>
     [Export] public Godot.Collections.Array<StringName> Exclude_Group = new Godot.Collections.Array<StringName>(){"Bullet","Flight"}; 
     [ExportGroup("Array")]
     /// <summary>
@@ -21,6 +35,7 @@ public partial class BulletData : ObjectPhysics
     /// 伤害
     /// </summary>
     [ExportGroup("Variant")] [Export] public int Damage = 20;
+    [Export] public VisibleOnScreenNotifier2D VisibleOnScreenEnabler = null;
     /// <summary>
     /// 攻击完成自动移除物体
     /// </summary>
@@ -30,6 +45,17 @@ public partial class BulletData : ObjectPhysics
     /// </summary>
     [ExportGroup("Vector")]
     [Export] public Godot.Vector2 Speed = new Vector2(1,1);
+    public override void _Ready() {
+        base._Ready();
+        if (!(VisibleOnScreenEnabler is null))
+        {
+            VisibleOnScreenEnabler.ScreenExited += Exit_Free;
+        }
+    }
+    void Exit_Free()
+    {
+        QueueFree();    
+    }
     public Vector2 Get_Rotation_Vector(float Rotation = 0)
     {
         Vector2 Temp_Vector;

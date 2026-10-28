@@ -1,5 +1,6 @@
 using PVZEngine.Enum;
 using Godot;
+using System;
 
 namespace PVZEngine.Data;
 
@@ -65,6 +66,14 @@ public struct GlobalData(){
     /// 物体类型
     /// </summary>
     public ObjectType Object_Type {get;set;} = ObjectType.Normal;
+    /// <summary>
+    /// 这是事件卡
+    /// </summary>
+    public bool is_EventCard {get;set;} = false;
+    /// <summary>
+    /// 事件卡标签
+    /// </summary>
+    public String EventTag {get;set;} = "";
     /// <summary>
     /// 这是空值
     /// </summary>

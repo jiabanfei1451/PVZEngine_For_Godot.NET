@@ -15,6 +15,7 @@ namespace PVZEngine;
 /// 关卡主脚本
 /// </summary>
 public partial class Level_Master_Script : Node2D{
+	[Signal] public delegate void Selected_EventCardEventHandler(String Tag);
 	/// <summary>
 	/// 物体死亡
 	/// </summary>

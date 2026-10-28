@@ -34,10 +34,14 @@ public partial class Card_Data : Node
 	new Godot.Collections.Array(){},
 	// 物体类型9
 	new Godot.Collections.Array(){},
-	// 移动端材质大小
+	// 移动端材质大小10
 	new(){},
-	// 移动端材质偏移
-	new(){}
+	// 移动端材质偏移11
+	new(){},
+	// 是否为事件卡12
+	new(){},
+	// 事件标签13
+	new(){},
 	};
 	/// <summary>
 	/// 已选择卡槽的剩余冷却
@@ -218,7 +222,9 @@ public partial class Card_Data : Node
 		SaveData.Class.Vector2 Map_Scale = null,
 		ObjectType Object_Type = ObjectType.Normal,
 		SaveData.Class.Vector2 PE_Scale = null,
-		SaveData.Class.Vector2 PE_Offset = null
+		SaveData.Class.Vector2 PE_Offset = null,
+		bool is_EventCard = false,
+		String EventTag = ""
 	){
 		Godot.Vector2 New_Scale = new Godot.Vector2(2,2);
 		Godot.Vector2 New_Offset = new Godot.Vector2(64,87);
@@ -265,6 +271,8 @@ public partial class Card_Data : Node
 		Data[9].Add((int)Object_Type);
 		Data[10].Add(NEW_PE_Scale);
 		Data[11].Add(NEW_PE_Offset);
+		Data[12].Add(is_EventCard);
+		Data[13].Add(EventTag);
 	}
 	#endregion
 	/// <summary>
@@ -299,7 +307,8 @@ public partial class Card_Data : Node
 			ObjectType object_Type = GlobalData.GetObjectType((int)Data[9][Index]);
 			Godot.Vector2 pe_Offset = (Godot.Vector2)Data[11][Index];
 			Godot.Vector2 pe_Scale = (Godot.Vector2)Data[10][Index];
-			
+			bool is_EventCard = (bool)Data[12][Index];
+			String EventTag = (String)Data[13][Index];
 			GlobalData Back = new GlobalData()
 			{
 				Scene = scene,
@@ -313,7 +322,9 @@ public partial class Card_Data : Node
 				Map_Scale = map_Scale,
 				Object_Type = object_Type,
 				Pe_Scale = pe_Scale,
-				Pe_Offset = pe_Offset
+				Pe_Offset = pe_Offset,
+				is_EventCard = is_EventCard,
+				EventTag = EventTag
 			};
 			return Back;
 		}

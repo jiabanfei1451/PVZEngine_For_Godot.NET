@@ -402,6 +402,7 @@ public partial class Card : Control
 			Level_Script.Use_Prop = Level_Script.Prop.Not;			
 		}
 		Data.GlobalData globalData = Card_Data.Get_CardData(Card_Index);
+
 		if (Level_Script.Equipment_Capable < globalData.Sonsume || CDing == true)
 		{
 			GetNode<Audio_Plus>("buzzer").Play();
@@ -415,17 +416,24 @@ public partial class Card : Control
 			{
 				Cancel_Audio = GetNode<Audio_Plus>("Cancel");
 			}
-		if (Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object != this){
-			Level_Master_Script level = (Level_Master_Script)GetTree().CurrentScene;
-			level.Selected_Lawn = null;
-			Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = this;
-			Selected_Audio.Play();
-		}
-		else
-		{
-			Cancel_Audio.Play();
-			Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = null;
-		}
+		if (!globalData.is_EventCard){
+			if (Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object != this){
+				Level_Master_Script level = (Level_Master_Script)GetTree().CurrentScene;
+				level.Selected_Lawn = null;
+				Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = this;
+				Selected_Audio.Play();
+			}
+			else
+			{
+				Cancel_Audio.Play();
+				Get_GlobalNode.Get_Card_Data(GetTree()).Selected_raw_Object = null;
+			}
+			}
+			else
+			{
+				Level_Script.Equipment_Capable -= globalData.Sonsume;
+				NodeData.Get_Node<Level_Master_Script>("Level").EmitSignal(Level_Master_Script.SignalName.Selected_EventCard,globalData.EventTag);
+			}
 	}
 	/// <summary>
 	/// 获取父节点

@@ -84,7 +84,15 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 阴影
     /// </summary>
-    [Export] public Node Shadow = null;
+    [Export] public Node2D Shadow = null;
+    /// <summary>
+    /// 阴影尺寸乘积
+    /// </summary>
+    [Export] public Godot.Vector2 Shadow_SizeMultiplication = new Vector2(1,1);
+    /// <summary>
+    /// 阴影最小尺寸
+    /// </summary>
+    [Export] public Godot.Vector2 MinShadow_Size = Vector2.Zero;
     /// <summary>
     /// 阴影尺寸
     /// </summary>

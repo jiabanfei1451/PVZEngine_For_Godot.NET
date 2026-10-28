@@ -171,25 +171,7 @@ public partial class Equipment : LevelObject
             {
                 if (Level_Script.Star_Fragment > 0)
                 {
-                    GD.Print(Level_Script.Star_Fragment);
-                    Level_Script.Star_Fragment -= 1;
-                    Level_Script.Use_Prop = Level_Script.Prop.Not;
-                    Audio_Plus audio = new();
-                    audio.Audio_Type = Audio_Plus.Audio.Souds;
-                    audio.fade_Time = 0;
-                    audio.Audio_ID = "CH:激发器械";
-                    audio.Auto_QueneFree = true;
-                    audio.Auto_Get_File = false;
-                    audio.Stream = PVZEngine.Static.Get_GlobalNode.Get_Audio_List(GetTree()).Get_Souds("CH:激发器械");
-                    audio.Autoplay = true;
-                    PackedScene GetEffect = PVZEngine.ResourceScene.LoadScene(Activate_Effect_Path);
-                    Node2D Effect_CanvasLayer = PVZEngine.Static.NodeData.Get_Node<Node2D>("Effect");
-                    Node2D Effect_Node = GetEffect.Instantiate<Node2D>();
-                    Effect_CanvasLayer.AddChild(Effect_Node);
-                    Effect_Node.GlobalPosition = GlobalPosition + Activate_Effect_Offset;
-                    GetTree().CurrentScene.AddChild(audio);
-                    audio.Play();
-                    EmitSignalActivate_Equipment();
+                    ActivateEvent();
                 }
             }
         }
@@ -205,6 +187,28 @@ public partial class Equipment : LevelObject
                 }
             }
         }
+    }
+    public void ActivateEvent()
+    {
+        GD.Print(Level_Script.Star_Fragment);
+        Level_Script.Star_Fragment -= 1;
+        Level_Script.Use_Prop = Level_Script.Prop.Not;
+        Audio_Plus audio = new();
+        audio.Audio_Type = Audio_Plus.Audio.Souds;
+        audio.fade_Time = 0;
+        audio.Audio_ID = "CH:激发器械";
+        audio.Auto_QueneFree = true;
+        audio.Auto_Get_File = false;
+        audio.Stream = PVZEngine.Static.Get_GlobalNode.Get_Audio_List(GetTree()).Get_Souds("CH:激发器械");
+        audio.Autoplay = true;
+        PackedScene GetEffect = PVZEngine.ResourceScene.LoadScene(Activate_Effect_Path);
+        Node2D Effect_CanvasLayer = PVZEngine.Static.NodeData.Get_Node<Node2D>("Effect");
+        Node2D Effect_Node = GetEffect.Instantiate<Node2D>();
+        Effect_CanvasLayer.AddChild(Effect_Node);
+        Effect_Node.GlobalPosition = GlobalPosition + Activate_Effect_Offset;
+        GetTree().CurrentScene.AddChild(audio);
+        audio.Play();
+        EmitSignalActivate_Equipment();
     }
     /// <summary>
     /// 死亡生成粒子
