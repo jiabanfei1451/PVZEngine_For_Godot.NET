@@ -1,3 +1,4 @@
+using System;
 using PVZEngine.Object.Module;
 namespace PVZEngine.Static{
 /// <summary>
@@ -6,6 +7,10 @@ namespace PVZEngine.Static{
 static class Level_Script : System.Object
 {
 	public static Level_Master_Script Level_Object = null;
+	/// <summary>
+	/// 关卡名称
+	/// </summary>
+	public static String Level_Name = "第一天";
 	public static bool Card_Drag = false;
 	/// <summary>
 	/// 器械能

@@ -104,6 +104,7 @@ public partial class Level_Master_Script : Node2D{
 	/// 摄像机
 	/// </summary>
 	[ExportGroup("Node")]
+	[Export] public String Chapter_Name = "序章";
 	[Export] public Godot.Camera2D Camera2D {get;set;} = null;
 	/// <summary>
 	/// 相机坐标
