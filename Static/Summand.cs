@@ -41,75 +41,82 @@ public static class Summand
         Vector2 Summand_Position = Level_Script.Level_Object.Lawn_Spawn_Position;
         Vector2 Summand_Offset = Level_Script.Level_Object.Lawn_Spawn_Offect;
         System.Random Ran = new System.Random();
+        set_Timer();
         if (Data.Summand_ing == false)
         {
             Data.Max_Summand_Number = Number;
             Data.Current_Summand_Number = 0;
             Data.Summand_ing = true;
-        }
-        while (Data.Current_Summand_Number < Data.Max_Summand_Number)
-        {
-            int Temp_Count = Data.Summand_List.Count - 1;
-            ID Random_Get = null;
-            Random_Get = Data.Summand_List[Ran.Next(0,Temp_Count)]; 
-            PackedScene GetPacked = Object_List.Get_Packed(Random_Get);
-            GlobalData get_carddata = Card_Data.Get_CardData(GetPacked);
-            Vector2 Summand_Scale = new(1,1);
-            Vector2 Summanc_Offset = new(40,48);
+            while (Data.Current_Summand_Number < Data.Max_Summand_Number)
+            {
+                if (Data.Present_Object.Count < 50)
+                {
+                    int Temp_Count = Data.Summand_List.Count - 1;
+                    ID Random_Get = null;
+                    Random_Get = Data.Summand_List[Ran.Next(0,Temp_Count)]; 
+                    PackedScene GetPacked = Object_List.Get_Packed(Random_Get);
+                    GlobalData get_carddata = Card_Data.Get_CardData(GetPacked);
+                    Vector2 Summand_Scale = new(1,1);
+                    Vector2 Summanc_Offset = new(40,48);
 
-            if (get_carddata.is_Null == false)
-            {
-                Summand_Scale = get_carddata.Map_Scale;
-                Summanc_Offset = get_carddata.Map_Offset;
-            }
-            // 计算生成后坐标
-            Vector2 Object_Summand_Offset = new Vector2(0,Data.random.RandiRange(Data.YPosition_Offset.X,Data.YPosition_Offset.Y) * Summand_Offset.Y);
-            Vector2 Data_Summand_Position = new Vector2(Data.Summand_Position.X,Data.Summand_Position.Y);
-            // 求和
-            Vector2 Object_Summand_Position = Summand_Position + Data_Summand_Position + Object_Summand_Offset + Summanc_Offset;
-            // 开始实例化
-            LevelObject Instantiate = get_carddata.Scene.InstantiateOrNull<LevelObject>();
-            
-            if (!Cheak.is_null<LevelObject>(Instantiate))
-            {
-                Node2D Get_Node = null;
-                String layer = Instantiate.Default_generation_layer;
-                if (layer != "")
-                {
-                    Get_Node = NodeData.Get_Node<Node2D>(Instantiate.Default_generation_layer);
-                }
-                if (Cheak.is_null<Node2D>(Get_Node))
-                {
-                    if (Instantiate.IsInGroup("Monster"))
+                    if (get_carddata.is_Null == false)
                     {
-                        Get_Node = NodeData.Get_Node<Node2D>("Monster");
+                        Summand_Scale = get_carddata.Map_Scale;
+                        Summanc_Offset = get_carddata.Map_Offset;
                     }
-                    else
+                    // 计算生成后坐标
+                    Vector2 Object_Summand_Offset = new Vector2(0,Data.random.RandiRange(Data.YPosition_Offset.X,Data.YPosition_Offset.Y) * Summand_Offset.Y);
+                    Vector2 Data_Summand_Position = new Vector2(Data.Summand_Position.X,Data.Summand_Position.Y);
+                    // 求和
+                    Vector2 Object_Summand_Position = Summand_Position + Data_Summand_Position + Object_Summand_Offset + Summanc_Offset;
+                    // 开始实例化
+                    LevelObject Instantiate = get_carddata.Scene.InstantiateOrNull<LevelObject>();
+                    
+                    if (!Cheak.is_null<LevelObject>(Instantiate))
                     {
-                        Get_Node = NodeData.Get_Node<Node2D>("Equipment");
+                        Node2D Get_Node = null;
+                        String layer = Instantiate.Default_generation_layer;
+                        if (layer != "")
+                        {
+                            Get_Node = NodeData.Get_Node<Node2D>(Instantiate.Default_generation_layer);
+                        }
+                        if (Cheak.is_null<Node2D>(Get_Node))
+                        {
+                            if (Instantiate.IsInGroup("Monster"))
+                            {
+                                Get_Node = NodeData.Get_Node<Node2D>("Monster");
+                            }
+                            else
+                            {
+                                Get_Node = NodeData.Get_Node<Node2D>("Equipment");
+                            }
+                        }
+                        if (Data.delay_Summand == false){
+                            Instantiate.Physics_Enable = false;
+                            Instantiate.Position = Object_Summand_Position;
+                            Get_Node.AddChild(Instantiate);
+                            Instantiate.Physics_Enable = true;
+                        }
+                        else
+                        {
+                            Instantiate.Physics_Enable = false;
+                            Get_Node.AddChild(Instantiate);
+                            await Task.Delay((int)(1000 * Data.delay_SummandTime / 2));
+                            Instantiate.Position = Object_Summand_Position;
+                            Instantiate.practical_Position = Instantiate.GlobalPosition;
+                            Instantiate.Physics_Enable = true;
+                        }
+                        Data.Present_Object.Add(Instantiate);
+                        Data.Current_Summand_Number += 1;
                     }
-                }
-                if (Data.delay_Summand == false){
-                    Instantiate.Physics_Enable = false;
-                    Instantiate.Position = Object_Summand_Position;
-                    Get_Node.AddChild(Instantiate);
-                    Instantiate.Physics_Enable = true;
                 }
                 else
                 {
-                    Instantiate.Physics_Enable = false;
-                    Get_Node.AddChild(Instantiate);
-                    await Task.Delay((int)(1000 * Data.delay_SummandTime / 2));
-                    Instantiate.Position = Object_Summand_Position;
-                    Instantiate.practical_Position = Instantiate.GlobalPosition;
-                    Instantiate.Physics_Enable = true;
+                    await Task.Delay(300);
                 }
-                Data.Present_Object.Add(Instantiate);
-                Data.Current_Summand_Number += 1;
             }
+            Data.Summand_ing = false;
         }
-        Data.Summand_ing = false;
-        set_Timer();
     }
     public async static void set_Timer()
     {
@@ -125,10 +132,10 @@ public static class Summand
     public static void Cheak_Summand()
     {
         if (Data.Present_Object.Count <= 0 || Data.Await_Next_Wave_Timer <= 0){
-            if (Data.Current_Summand_Value <= Data.Max_Summand_Value){
+            if (Data.Current_Summand_Value <= Data.Max_Summand_Value - 1 && Data.Summand_ing == false){
                 Data.Get_Wave(Data.Current_Summand_Value);
                 Summand_Object(Data.Max_Summand_Number);
-                Data.Current_Summand_Number = Data.Max_Summand_Number;
+                Data.Current_Summand_Number = 0;
                 Data.Current_Summand_Value += 1;
             }
         }

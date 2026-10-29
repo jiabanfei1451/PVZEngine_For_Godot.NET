@@ -283,7 +283,7 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
         {
             HP = Max_HP;
         }
-        if (HP >= Min_HP){
+        if (HP > Min_HP){
             EmitSignal("Health_Reduce",Damage_Object);
         }
         else
