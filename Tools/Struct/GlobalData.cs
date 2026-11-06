@@ -21,47 +21,47 @@ public struct GlobalData(){
     /// <summary>
     /// 物体场景
     /// </summary>
-    public PackedScene Scene {get;set;}
+    public PackedScene Scene;
     /// <summary>
     /// 消耗
     /// </summary>
-    public short Sonsume {get;set;}
+    public short Sonsume {get;set;} = 0;
     /// <summary>
     /// 冷却时间
     /// </summary>
-    public float CD {get;set;}
+    public float CD {get;set;} = 0;
     /// <summary>
     /// 首次冷却时减少冷却
     /// </summary>
-    public float First_Time_RemoveCD {get;set;}
+    public float First_Time_RemoveCD {get;set;} = 0;
     /// <summary>
     /// 材质大小
     /// </summary>
-    public Godot.Vector2 Scale {get;set;}
+    public Godot.Vector2 Scale {get;set;} = new Godot.Vector2(2,2);
     /// <summary>
     /// 材质偏移
     /// </summary>
-    public Godot.Vector2 Offset {get;set;}
+    public Godot.Vector2 Offset {get;set;} = new Godot.Vector2(64,87);
     /// <summary>
     /// 移动端材质大小
     /// </summary>
-    public Godot.Vector2 Pe_Scale {get;set;}
+    public Godot.Vector2 Pe_Scale {get;set;}  = Godot.Vector2.Zero;
     /// <summary>
     /// 移动端偏移
     /// </summary>
-    public Godot.Vector2 Pe_Offset {get;set;}
+    public Godot.Vector2 Pe_Offset {get;set;}  = Godot.Vector2.Zero;
     /// <summary>
     /// 鼠标偏移
     /// </summary>
-    public Godot.Vector2 Mouse_Offset {get;set;}
+    public Godot.Vector2 Mouse_Offset {get;set;} = Godot.Vector2.Zero;
     /// <summary>
     /// 地图偏移
     /// </summary>
-    public Godot.Vector2 Map_Offset {get;set;}
+    public Godot.Vector2 Map_Offset {get;set;} = new Godot.Vector2(40,48);
     /// <summary>
     /// 地图缩放
     /// </summary>
-    public Godot.Vector2 Map_Scale {get;set;}
+    public Godot.Vector2 Map_Scale {get;set;} = new Godot.Vector2(1,1);
     /// <summary>
     /// 物体类型
     /// </summary>

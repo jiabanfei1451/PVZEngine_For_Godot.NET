@@ -9,6 +9,8 @@ using PVZEngine.Enum;
 using PVZEngine.Object;
 using PVZEngine.Object.Module;
 using PVZEngine.Static;
+using System.Text.Json;
+using System.IO;
 
 namespace PVZEngine;
 /// <summary>
@@ -278,15 +280,24 @@ public partial class Level_Master_Script : Node2D{
 			string ps = Regex.Replace(Seed_Why,@"[^0-9]+","");
 			short p = (short)ps.ToInt();
 			Level_Script.Equipment_Capable = p;
-		}else if(Seed_Why.IndexOf("/GetData") != -1)
+		}else if(Seed_Why.IndexOf("/SaveData") != -1)
 		{
-			DEBUG.Info.Print(PlayerData.Player_Data);
-		}else if(Seed_Why.IndexOf("/SaveInfo") != -1)
+			FileSystem.CreateDir("user://Saves");
+			FileStream Str = FileSystem.CreateFile("user://Saves/Playerdata.json");
+			String DataText = JsonSerializer.Serialize<PVZEngine.Data.PlayerData.Data>(PVZEngine.Data.PlayerData.Savedata);
+			String HandleText = FileSystem.Handle_JsonText(DataText);
+			FileSystem.WriteFileandoff(Str,HandleText);
+		}else if(Seed_Why.IndexOf("/LoadData") != -1)
+		{
+			String Get_FileText = FileSystem.Get_FileText("user://Saves/Playerdata.json");
+			PlayerData.Savedata = JsonSerializer.Deserialize<PVZEngine.Data.PlayerData.Data>(Get_FileText);
+		}
+		else if(Seed_Why.IndexOf("/SaveInfo") != -1)
 		{
 			DEBUG.Info.Save_Info("C:\\Info.txt");
 		}else if(Seed_Why.IndexOf("/Star") != -1)
 		{
-			Level_Script.Star_Fragment = 5;
+			Level_Script.Star_Fragment = PlayerData.Savedata.Max_Star_Fragment;
 		}
 	}
 	#region 草坪方法

@@ -8,22 +8,7 @@ using PVZEngine.Object.Module;
 namespace PVZEngine.Data;
 public static class PlayerData : System.Object
 {
-    /// <summary>
-    /// 名称
-    /// </summary>
-    public static String Name = "痊愈加班费";
-    /// <summary>
-    /// 最大卡槽数量 实际值是当前值 + 1
-    /// </summary>
-    public static int Card_Quantity = 5;
-    /// <summary>
-	/// 最大星之碎片
-	/// </summary>
-	public static byte Max_Star_Fragment = 3;
-    /// <summary>
-    /// 难度
-    /// </summary>
-    public static Difficult Difficult = Enum.Difficult.Normal;
+    public static Data Savedata = new Data();
     /// <summary>
     /// 由JSON存储的文本数据
     /// </summary>
@@ -39,10 +24,6 @@ public static class PlayerData : System.Object
             ResourceLoader.Load("res://2/Text/EN_US/Level_Text.json")},
     };
     /// <summary>
-    /// 玩家数据
-    /// </summary>
-    public static Godot.Collections.Dictionary<String,Variant> Player_Data = new Godot.Collections.Dictionary<string, Variant>();
-    /// <summary>
     /// 临时器械数据
     /// </summary>
     public static LevelObject Temp_CardObject = null;
@@ -50,39 +31,35 @@ public static class PlayerData : System.Object
     /// 临时卡槽数据
     /// </summary>
     public static Card Temp_Card = null;
-    /// <summary>
-    /// 临时数据名称
-    /// </summary>
-    internal static List<String> Temp_Data_Key = new();
-    /// <summary>
-    /// 临时数据
-    /// </summary>
-    internal static List<Variant> Temp_Data = new List<Variant>();
-    /// <summary>
-    /// 添加数据
-    /// </summary>
-    /// <param name="Key"></param>
-    /// <param name="Data"></param>
-    public static void Add_Data(String Key,Variant Data)
+    public class Data()
     {
-        Temp_Data.Add(Data);
-        Temp_Data_Key.Add(Key);
-        While_Add();
-    }
-    /// <summary>
-    /// 循环添加
-    /// </summary>
-    internal static void While_Add()
-    {
-        for (int List_Index = 0;List_Index < Temp_Data.Count; List_Index++)
-        {
-            Player_Data[Temp_Data_Key[0]] = Temp_Data[0];
-            Temp_Data.RemoveAt(0);
-            Temp_Data_Key.RemoveAt(0);
-        }
-        if (Temp_Data.Count > 0)
-        {
-            While_Add();
-        }
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public String Name {get;set;} = "痊愈加班费";
+        /// <summary>
+        /// 最大卡槽数量 实际值是当前值 + 1
+        /// </summary>
+        public int Card_Quantity {get;set;} = 5;
+        /// <summary>
+        /// 最大星之碎片
+        /// </summary>
+        public byte Max_Star_Fragment {get;set;} = 3;
+        /// <summary>
+        /// 难度
+        /// </summary>
+        public Difficult Difficult {get;set;} = Enum.Difficult.Normal;
+        /// <summary>
+        /// 版本号
+        /// </summary>
+        public String Version {get;set;} = "Bata0.1.6";
+        /// <summary>
+        /// 版本等级
+        /// </summary>
+        public int VersionLevel {get;set;} = 1;
+        /// <summary>
+        /// 游戏加速
+        /// </summary>
+        public byte AddSpeed {get;set;} = 2;
     }
 }

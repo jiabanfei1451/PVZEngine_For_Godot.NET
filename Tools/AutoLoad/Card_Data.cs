@@ -78,25 +78,89 @@ public partial class Card_Data : Node
 		base._Ready();
 		Initialization();
 		#region 增加器械数据
-		Add_Data(ResourceScene.LoadScene("res://Object/Equipment/Transmitter.tscn"),100,7.5f,3,SaveData.Class.Vector2.New(2,2),SaveData.Class.Vector2.New(64,87));
-		Add_Data(ResourceScene.LoadScene("res://Object/Equipment/Furnace.tscn"),50,7.5f,7.5f,SaveData.Class.Vector2.New(2,2),SaveData.Class.Vector2.New(72,87));
-		Add_Data(ResourceScene.LoadScene("res://Object/Monster/Zombies.tscn"),0,0,0,SaveData.Class.Vector2.New(2,2),SaveData.Class.Vector2.New(80,186),null,SaveData.Class.Vector2.New(40,70f),null, ObjectType.Monster);
-		Add_Data(ResourceScene.LoadScene("res://Object/Equipment/Obsidian.tscn"),50,30,15,SaveData.Class.Vector2.New(2,2),SaveData.Class.Vector2.New(73,94));
-		Add_Data(ResourceScene.LoadScene("uid://lyb0noko5sk1"),0,0,0,SaveData.Class.Vector2.New(2,2),SaveData.Class.Vector2.New(64,87),null,null,null,ObjectType.Bearing_unit);
-		Add_Data(
-			ResourceScene.LoadScene("res://Object/Equipment/好友/HuanChong152.tscn"),
-			0,
-			0,
-			0,
-			SaveData.Class.Vector2.New(2,2),
-			SaveData.Class.Vector2.New(64,87),
-			null,
-			null,
-			null,
-			ObjectType.Normal
-		);
-		Add_Data(ResourceScene.LoadScene("uid://bokxlltcu2pxm"),0,0,0,SaveData.Class.Vector2.New(2,2),SaveData.Class.Vector2.New(64,87));
-		Add_Data(ResourceScene.LoadScene("uid://bcfm88f3tbgt8"),0,0,0,SaveData.Class.Vector2.New(2,2),SaveData.Class.Vector2.New(64,87));
+		GlobalData data = new()
+		{
+			Scene = ResourceScene.LoadScene("res://Object/Equipment/Transmitter.tscn"),
+			Sonsume = 100,
+			CD = 7.5f,
+			First_Time_RemoveCD = 3,
+			Scale = new(2,2),
+			Offset = new(64,87)
+		};
+		Add_Data(data);
+		data = new()
+		{
+			Scene = ResourceScene.LoadScene("res://Object/Equipment/Furnace.tscn"),
+			Sonsume = 50,
+			CD = 7.5f,
+			First_Time_RemoveCD = 7.5f,
+			Scale = new(2,2),
+			Offset = new(72,87)
+		};
+		Add_Data(data);
+		data = new()
+		{
+			Scene = ResourceScene.LoadScene("res://Object/Monster/Zombies.tscn"),
+			Sonsume = -50,
+			CD = 0f,
+			First_Time_RemoveCD = 0f,
+			Scale = new(2,2),
+			Offset = new(80,186),
+			Map_Offset = new(40,70),
+			Object_Type = ObjectType.Monster
+		};
+		Add_Data(data);
+		data = new()
+		{
+			Scene = ResourceScene.LoadScene("res://Object/Equipment/Obsidian.tscn"),
+			Sonsume = 50,
+			CD = 30f,
+			First_Time_RemoveCD = 15f,
+			Scale = new(2,2),
+			Offset = new(73,94),
+		};
+		Add_Data(data);
+		data = new()
+		{
+			Scene = ResourceScene.LoadScene("uid://lyb0noko5sk1"),
+			Sonsume = 0,
+			CD = 0,
+			First_Time_RemoveCD = 0,
+			Scale = new(2,2),
+			Offset = new(65,87),
+			Object_Type = ObjectType.Bearing_unit
+		};
+		Add_Data(data);
+		data = new()
+		{
+			Scene = ResourceScene.LoadScene("res://Object/Equipment/好友/HuanChong152.tscn"),
+			Sonsume = 0,
+			CD = 0,
+			First_Time_RemoveCD = 0,
+			Scale = new(2,2),
+			Offset = new(64,87),
+		};
+		Add_Data(data);
+		data = new()
+		{
+			Scene = ResourceScene.LoadScene("uid://bokxlltcu2pxm"),
+			Sonsume = 0,
+			CD = 0,
+			First_Time_RemoveCD = 0,
+			Scale = new(2,2),
+			Offset = new(64,87),
+		};
+		Add_Data(data);
+		data = new()
+		{
+			Scene = ResourceScene.LoadScene("uid://bcfm88f3tbgt8"),
+			Sonsume = 0,
+			CD = 0,
+			First_Time_RemoveCD = 0,
+			Scale = new(2,2),
+			Offset = new(64,87),
+		};
+		Add_Data(data);
 		#endregion
 	}
 	public void CD_Initialization()
@@ -114,7 +178,7 @@ public partial class Card_Data : Node
 	{
 		Selected_raw_Object = null;
 		Selected.Clear();
-		for (int Count = 0;Count < PlayerData.Card_Quantity; Count++)
+		for (int Count = 0;Count < PlayerData.Savedata.Card_Quantity; Count++)
 		{
 			Control New_Null = new Control();
 			New_Null.Name = "Null";
@@ -181,7 +245,7 @@ public partial class Card_Data : Node
 				variants.Add(node);
 			}
 		}
-		for (int Length = variants.Count;Length < PlayerData.Card_Quantity; Length++)
+		for (int Length = variants.Count;Length < PlayerData.Savedata.Card_Quantity; Length++)
 		{
 			Control New_Null = new Control();
 			New_Null.QueueFree();
@@ -210,69 +274,21 @@ public partial class Card_Data : Node
 	/// <param name="Object_Type">物体类型</param>
 	/// <param name="Reliant_UUID">依赖ID</param>
 	/// <param name="Reliant_Tag">依赖标签</param>
-	public void Add_Data(
-		PackedScene Scene = null,
-		int sonsume = 0,
-		float CD = 0,
-		float RemoveCD = 0,
-		SaveData.Class.Vector2 Scale = null,
-		SaveData.Class.Vector2 Offset = null,
-		SaveData.Class.Vector2 Mouse_Offset = null,
-		SaveData.Class.Vector2 Map_Offset = null,
-		SaveData.Class.Vector2 Map_Scale = null,
-		ObjectType Object_Type = ObjectType.Normal,
-		SaveData.Class.Vector2 PE_Scale = null,
-		SaveData.Class.Vector2 PE_Offset = null,
-		bool is_EventCard = false,
-		String EventTag = ""
-	){
-		Godot.Vector2 New_Scale = new Godot.Vector2(2,2);
-		Godot.Vector2 New_Offset = new Godot.Vector2(64,87);
-		Godot.Vector2 New_Mouse_Offset = Godot.Vector2.Zero;
-		Godot.Vector2 New_Map_Offset = new Godot.Vector2(40,48);
-		Godot.Vector2 New_Map_Scale = new Godot.Vector2(1,1);
-		Godot.Collections.Array<String> New_Reliant_UUID = new(){};
-		Godot.Collections.Array<String> New_Reliant_Tag = new(){};
-		if (Scale != null){
-			New_Scale = new Godot.Vector2(Scale.X,Scale.Y);
-		}
-		if (Offset != null){
-			New_Offset = new Godot.Vector2(Offset.X,Offset.Y);
-		}
-		if (Mouse_Offset != null){
-			New_Mouse_Offset = new Godot.Vector2(Mouse_Offset.X,Mouse_Offset.Y);
-		}
-		if (Map_Offset != null){
-			New_Map_Offset = new Godot.Vector2(Map_Offset.X,Map_Offset.Y);
-		}
-		if (Map_Scale != null)
-		{
-			New_Map_Scale = new Godot.Vector2(Map_Scale.X,Map_Scale.Y);
-		}
-		Godot.Vector2 NEW_PE_Offset = New_Offset;
-		Godot.Vector2 NEW_PE_Scale = New_Scale;
-		if (PE_Scale != null)
-		{
-			NEW_PE_Scale = new Godot.Vector2(PE_Scale.X,PE_Offset.Y);
-		}
-		if (PE_Offset != null)
-		{
-			NEW_PE_Offset = new Godot.Vector2(PE_Offset.X,PE_Offset.Y);
-		}
-		Data[0].Add(Scene);
-		Data[1].Add(sonsume);
-		Data[2].Add(CD);
-		Data[3].Add(RemoveCD);
-		Data[4].Add(New_Offset);
-		Data[5].Add(New_Scale);
-		Data[6].Add(New_Mouse_Offset);
-		Data[7].Add(New_Map_Offset);
-		Data[8].Add(New_Map_Scale);
-		Data[9].Add((int)Object_Type);
-		Data[10].Add(NEW_PE_Scale);
-		Data[11].Add(NEW_PE_Offset);
-		Data[12].Add(is_EventCard);
-		Data[13].Add(EventTag);
+	public void Add_Data(GlobalData data){
+		Data[0].Add(data.Scene);
+		Data[1].Add(data.Sonsume);
+		Data[2].Add(data.CD);
+		Data[3].Add(data.First_Time_RemoveCD);
+		Data[4].Add(data.Offset);
+		Data[5].Add(data.Scale);
+		Data[6].Add(data.Mouse_Offset);
+		Data[7].Add(data.Map_Offset);
+		Data[8].Add(data.Map_Scale);
+		Data[9].Add((int)data.Object_Type);
+		Data[10].Add(data.Pe_Scale);
+		Data[11].Add(data.Pe_Offset);
+		Data[12].Add(data.is_EventCard);
+		Data[13].Add(data.EventTag);
 	}
 	#endregion
 	/// <summary>
