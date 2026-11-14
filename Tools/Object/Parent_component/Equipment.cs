@@ -124,11 +124,11 @@ public partial class Equipment : LevelObject
             TouchPad.Button_Pressedvoid += Pressed;
         }
     }
-    public void Selected_Null()
+    public virtual void Selected_Null()
     {
         Level_Script.Selected_Object = null;
     }
-    public void Selected_This()
+    public virtual void Selected_This()
     {
         Level_Script.Selected_Object = this;
     }
@@ -136,7 +136,7 @@ public partial class Equipment : LevelObject
     /// 受击释放粒子
     /// </summary>
     /// <param name="Damage_Object"></param>
-    public void This_Damage(Node Damage_Object)
+    public virtual void This_Damage(Node Damage_Object)
     {
         for (int i = 0;i < Particie_Number;i++){
             float x = -PVZEngine.Module.Random.NextFloat_32(24,0);
@@ -154,7 +154,7 @@ public partial class Equipment : LevelObject
             Summand_Particie.EmitSignal(MVZ2.Object.Particie.SignalName.Initialization);
         }
     }
-    public void Pressed()
+    public virtual void Pressed()
     {
         if (!Enable){return;}
         if (Level_Script.Use_Prop == Level_Script.Prop.iron_pickaxe)
@@ -188,7 +188,7 @@ public partial class Equipment : LevelObject
             }
         }
     }
-    public void ActivateEvent()
+    public virtual void ActivateEvent()
     {
         GD.Print(Level_Script.Star_Fragment);
         Level_Script.Star_Fragment -= 1;
@@ -213,7 +213,7 @@ public partial class Equipment : LevelObject
     /// <summary>
     /// 死亡生成粒子
     /// </summary>
-    public void This_Kill()
+    public virtual void This_Kill()
     {
         if (!Kill_Auto_Free){return;}
         if (!Enable){return;}

@@ -3,10 +3,16 @@ using System;
 using PVZEngine.Enum;
 using PVZEngine.Static;
 using System.Text;
+using PVZEngine.Effect;
 namespace PVZEngine.Object.Module;
 [Icon("uid://dwrrtr5iyf6yq")]
 public partial class ObjectPhysics : Node2D
 {
+    /// <summary>
+    /// 光源生成
+    /// </summary>
+    [ExportGroup("Light")]
+    [Export] public Godot.Collections.Array<PVZEngine.Data.LightData> LightArray = new();
     /// <summary>
     /// 当前草坪行数索引
     /// </summary>
@@ -181,9 +187,6 @@ public partial class ObjectPhysics : Node2D
     /// 叠加放置UUID白名单
     /// </summary>
     [Export] public Godot.Collections.Array<String> Stackable_UUID = new(){};
-    /// <summary>
-    /// 重置物理坐标
-    /// </summary>
     public override void _ExitTree() {
         base._ExitTree();
         if (!Cheak.is_null<Node2D>(Shadow))
@@ -191,6 +194,9 @@ public partial class ObjectPhysics : Node2D
             Shadow.QueueFree();
         }
     }
+    /// <summary>
+    /// 重置物理坐标
+    /// </summary>
     internal void Reset_Position()
     {
         if(PositionType == PositionType.GlobalPosition){
@@ -201,6 +207,21 @@ public partial class ObjectPhysics : Node2D
         {
             practical_Position = Position;
         }
+    }
+    internal virtual void Summand_Light()
+    {
+        foreach(PVZEngine.Data.LightData data in LightArray)
+        {
+            PackedScene LightScene = ResourceScene.LoadScene("uid://bqkm0xbe6lus1");
+            Light New_Light = LightScene.Instantiate<Light>();
+            New_Light.LightScale = data.Scale;
+            New_Light.LightColor = data.LightColor;
+            New_Light.ThisOffset = data.Offset;
+            New_Light.PositionType = data.positionType;
+            New_Light.Parent_Object = GetNode<Node2D>(data.Parene_Object);
+            NodeData.Get_Node<Node2D>("LightMask").AddChild(New_Light);
+        }
+        LightArray.Clear();
     }
     /// <summary>
     /// 设置物理坐标

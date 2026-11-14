@@ -35,11 +35,11 @@ public struct GlobalData(){
     /// </summary>
     public float First_Time_RemoveCD {get;set;} = 0;
     /// <summary>
-    /// 材质大小
+    /// 电脑端材质大小
     /// </summary>
     public Godot.Vector2 Scale {get;set;} = new Godot.Vector2(2,2);
     /// <summary>
-    /// 材质偏移
+    /// 电脑端材质偏移
     /// </summary>
     public Godot.Vector2 Offset {get;set;} = new Godot.Vector2(64,87);
     /// <summary>
@@ -51,9 +51,13 @@ public struct GlobalData(){
     /// </summary>
     public Godot.Vector2 Pe_Offset {get;set;}  = Godot.Vector2.Zero;
     /// <summary>
-    /// 鼠标偏移
+    /// 在鼠标指针位置偏移
     /// </summary>
     public Godot.Vector2 Mouse_Offset {get;set;} = Godot.Vector2.Zero;
+    /// <summary>
+    /// 在鼠标指针缩放
+    /// </summary>
+    public Godot.Vector2 Mouse_Scale {get;set;} = new Godot.Vector2(2,2);
     /// <summary>
     /// 地图偏移
     /// </summary>

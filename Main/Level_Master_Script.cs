@@ -37,23 +37,40 @@ public partial class Level_Master_Script : Node2D{
 	public delegate void Object_Change_HeightEventHandler(ObjectPhysics Data_Object);
 	#region 变量
 	[Export] public bool DeBug {get;set;} = true;
+	[ExportGroup("Light")]
+	[Export]public bool Enable_Light {
+		get{
+			return Enable_Light_Bak;
+		}
+		set{
+			Enable_Light_Bak = value;
+			Enable_LightMaskChange();
+		}
+	}
+	private bool Enable_Light_Bak = false;
+	[Export] public bool Enable_LightMask = false;
+	[Export] public Color LightMaskColor = new(0,0,0,1);
+	[Export(PropertyHint.Range,"0,10,0.01")] public float LightMask_Intensity = 1;
+	[Export(PropertyHint.Range,"0,10,0.01")] public float Light_Intensity = 1;
+	[Export(PropertyHint.Range,"0,10,0.01")] public float LightColor_Intensity = 1;
+	public ColorRect Light_Mask = null;
 	[ExportCategory("看什么?难道你不知道脚本里有中文注释吗?")]
 	[ExportGroup("BGM")][Export] public String Level_BGMID {get;set;} = "0";
 	/// <summary>
 	/// 节点生成
 	/// </summary>
 	[ExportGroup("Layer")]
-	[Export] public String[] Node_Index {get;set;} = ["Shadow","Equipment","Monster","Shoot","particle","Effect","Light","Item"];
+	[Export] public String[] Node_Index {get;set;} = ["Shadow","Equipment","Monster","Shoot","particle","Effect","LightColor","LightMask","Item"];
 	/// <summary>
 	/// 图层分配
 	/// </summary>
-	[Export] public int[] Layer_Index {get;set;} = [0,2,3,3,4,5,6,9];
+	[Export] public int[] Layer_Index {get;set;} = [0,2,3,3,4,5,6,6,9];
 	/// <summary>
 	/// 类型分配
 	/// 0 = Node,
 	/// 1 = Viewport,
 	/// </summary>
-	[Export] public int[] Node_Type {get;set;} = [2,0,0,0,0,0,2,0];
+	[Export] public int[] Node_Type {get;set;} = [2,0,0,0,0,0,0,2,0];
 	/// <summary>
 	/// 选中的草坪
 	/// </summary>
@@ -156,6 +173,52 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	internal float Temp_audio_await_timer {get;set;} = 0; 
 	#endregion
+	private void Enable_LightMaskChange()
+	{
+		if (!(Light_Mask is null))
+		{
+			Light_Mask.Visible = Enable_Light_Bak;
+		}
+	}
+	/// <summary>
+	/// 初始化
+	/// </summary>
+	public override async void _Ready() {
+		base._Ready();
+		Reset_Lawn_Index();
+		Level_Script.Level_Object = this;
+		LawnScene = ResourceScene.LoadScene("uid://dim8rk13omwvv");
+		NodeData.Clear_Node();
+		NodeData.Add_Node(this,"Level");
+		summand_Node();
+		await Task.Delay(100);
+		if (Cheak.is_null<Camera2D>(Camera2D))
+		{
+			Camera2D = new Camera2D(); 
+			Camera2D.Position = Camera2D_Position;
+			Camera2D.Offset = Camera2D_Offset;
+			Camera2D.Zoom = Camera2D_Zoom;
+			AddChild(Camera2D);
+			NodeData.Add_Node(Camera2D,"Camera2D");
+		}
+		Lawn_Node = GetNode<Node2D>("Lawn");
+		Lawn_Data.Resize(Lawn_Array.Count);
+		if (Auto_Spawn_Lawn)
+		{
+			Summand_Lawn();
+		}
+		Game_Reset_Done = true;
+		NodeData.Get_Node<Node2D>("Shadow").Modulate = new(1,1,1,0.7f);
+		ColorRect LightMask = new();
+		LightMask.Size = new(4096,4096);
+		LightMask.Position = -LightMask.Size / 2f;
+		CanvasItemMaterial material = new();
+		material.BlendMode = CanvasItemMaterial.BlendModeEnum.Add;
+		LightMask.Material = material;
+		Light_Mask = LightMask;
+		NodeData.Get_Node<Node2D>("LightMask").AddChild(LightMask);
+		Light_Mask.Visible = Enable_LightMask;
+	}
 	/// <summary>
 	/// 用于摄像机缓动的process
 	/// </summary>
@@ -186,6 +249,10 @@ public partial class Level_Master_Script : Node2D{
 				Seed_OK = true;
 				Game.Get_GlobalNode.CommandEdit.Player_send += Get_Player_Send;
 			}
+		}
+		if (!(Light_Mask is null))
+		{
+			Light_Mask.Color = new(LightMaskColor.R,LightMaskColor.G,LightMaskColor.B,LightMaskColor.A * LightMask_Intensity);
 		}
 		if (Cheak.is_null<Camera2D>(Camera2D)){return;}
 		if (!Cheak.is_null<Tween>(Camera2D_Easing)){Camera2D_Easing.Kill();}
@@ -560,36 +627,6 @@ public partial class Level_Master_Script : Node2D{
     public override void _ExitTree()
     {
         base._ExitTree();
-	}
-	/// <summary>
-	/// 初始化
-	/// </summary>
-	public override async void _Ready() {
-		base._Ready();
-		Reset_Lawn_Index();
-		Level_Script.Level_Object = this;
-		LawnScene = ResourceScene.LoadScene("uid://dim8rk13omwvv");
-		NodeData.Clear_Node();
-		NodeData.Add_Node(this,"Level");
-		summand_Node();
-		await Task.Delay(100);
-		if (Cheak.is_null<Camera2D>(Camera2D))
-		{
-			Camera2D = new Camera2D(); 
-			Camera2D.Position = Camera2D_Position;
-			Camera2D.Offset = Camera2D_Offset;
-			Camera2D.Zoom = Camera2D_Zoom;
-			AddChild(Camera2D);
-			NodeData.Add_Node(Camera2D,"Camera2D");
-		}
-		Lawn_Node = GetNode<Node2D>("Lawn");
-		Lawn_Data.Resize(Lawn_Array.Count);
-		if (Auto_Spawn_Lawn)
-		{
-			Summand_Lawn();
-		}
-		Game_Reset_Done = true;
-		NodeData.Get_Node<Node2D>("Shadow").Modulate = new(1,1,1,0.7f);
 	}
 	/// <summary>
 	/// 生成节点(差不多就是初始化)

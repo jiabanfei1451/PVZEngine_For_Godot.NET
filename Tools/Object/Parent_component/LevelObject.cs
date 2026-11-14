@@ -39,6 +39,7 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     [Signal] public delegate void KillEventHandler();
     #endregion
     [ExportCategory("看什么看?变量在Data中")]
+    
     [ExportGroup("Object")]
     [Export] public Godot.Area2D Area = null;
     /// <summary>
@@ -143,6 +144,7 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
             HP = Max_HP;
         }
         if (!Enable){return;}
+        Summand_Light();
         Reset_Position();
         Area = GetNodeOrNull<Godot.Area2D>("Area");
     }
@@ -150,7 +152,7 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     /// 物体移动
     /// </summary>
     /// <param name="delta"></param>
-    public void Object_Move(double delta)
+    public virtual void Object_Move(double delta)
     {
         switch (MoveType){
             case Move_Type.Linear_Motion:
@@ -243,6 +245,10 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
             EmitSignal("Object_Join",node);
         }
     }
+    /// <summary>
+    /// 自身攻击
+    /// </summary>
+    public virtual void This_Damage(){}
     /// <summary>
     /// 移除已检测到的其中一位物体
     /// </summary>

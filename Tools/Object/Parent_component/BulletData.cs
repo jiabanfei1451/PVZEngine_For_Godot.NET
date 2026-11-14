@@ -87,6 +87,7 @@ public partial class BulletData : ObjectPhysics
         if (node is LevelObject){
             bool Cheak = Game.Cheak.CheakGroup.Cheak_Object_Group(node,detection_Group,Exclude_Group);
             ObjectPhysics objectPhysics = (ObjectPhysics)node;
+            if(objectPhysics.Physics_Enable == false){return;}
             bool Height_Cheak = Cheak_Height(objectPhysics);
             bool Height_Level_Cheak = Cheak_HeightLevel(objectPhysics);
             if (!Cheak){return;}
