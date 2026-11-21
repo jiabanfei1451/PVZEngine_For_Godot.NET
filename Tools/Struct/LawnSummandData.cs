@@ -1,6 +1,6 @@
 using Godot;
 namespace PVZEngine.Data;
-
+[GlobalClass]
 public partial class LawnSummandData : Resource
 {
     /// <summary>
@@ -13,6 +13,10 @@ public partial class LawnSummandData : Resource
 		new Godot.Collections.Array<int>(){0,0,0,0,0,0,0,0,0},
 		new Godot.Collections.Array<int>(){0,0,0,0,0,0,0,0,0},
 		new Godot.Collections.Array<int>(){0,0,0,0,0,0,0,0,0},
+	};
+	[Export] public Godot.Collections.Array<int> Lawn_Offset {get;set;} = new()
+	{
+		0,0,0,0,0,0,0,0,0,0,0
 	};
 	/// <summary>
 	/// 草坪每次生成后的偏移

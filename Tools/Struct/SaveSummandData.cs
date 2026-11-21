@@ -21,7 +21,7 @@ public class SaveSummanddata
     /// 波次生成怪物ID
     /// </summary>
     #region 波次数据
-    public List<List<ID>> Object_ID {get;set;}
+    public List<List<ObjectID>> Object_ID {get;set;}
     /// <summary>
     /// 生成数量
     /// </summary>
@@ -39,7 +39,7 @@ public class SaveSummanddata
     /// <summary>
     /// 指定物体
     /// </summary>
-    public List<ID> Specify_Monster_Summand {get;set;}
+    public List<ObjectID> Specify_Monster_Summand {get;set;}
     /// <summary>
     /// 指定生成坐标
     /// </summary>
@@ -52,7 +52,7 @@ public class SaveSummanddata
     /// <summary>
     /// 完成检测ID
     /// </summary>
-    public List<ID> ENDCheck_ID {get;set;}
+    public List<ObjectID> ENDCheck_ID {get;set;}
     /// <summary>
     /// 完成检测后存在状态
     /// </summary>

@@ -14,7 +14,7 @@ public class Summand_Data
     /// <summary>
     /// 生成物体ID
     /// </summary>
-    public List<List<ID>> Summand_IDs {get;set;} = new List<List<ID>>(){};
+    public List<List<ObjectID>> Summand_IDs {get;set;} = new List<List<ObjectID>>(){};
     /// <summary>
     /// 生成数量
     /// </summary>
@@ -38,7 +38,7 @@ public class Summand_Data
     /// <summary>
     /// 指定标签
     /// </summary>
-    public List<ID> Detection_IDs = new(){};
+    public List<ObjectID> Detection_IDs = new(){};
     /// <summary>
     /// 在场怪物
     /// </summary>
@@ -75,7 +75,7 @@ public class Summand_Data
     /// <summary>
     /// 生成列表
     /// </summary>
-    public List<ID> Summand_List {get;set;} = null;
+    public List<ObjectID> Summand_List {get;set;} = new();
     /// <summary>
     /// 当前波次标签
     /// </summary>
@@ -131,7 +131,7 @@ public class Summand_Data
     /// <summary>
     /// 权重
     /// </summary>
-    public List<ID> Summand_weight {get;set;} = new();
+    public List<ObjectID> Summand_weight {get;set;} = new();
     public void Remove_present_Object(LevelObject Object)
     {
         Present_Object.Remove(Object);
@@ -256,7 +256,7 @@ public class Summand_Data
         /// <summary>
         /// 添加波次ID
         /// </summary>
-        public List<ID> Add_ID;
+        public List<ObjectID> Add_ID;
         /// <summary>
         /// 生成数量
         /// </summary>

@@ -14,7 +14,7 @@ public partial class Lawn : ColorRect{
 	[Export] public Vector2I ArrayPosition = new Vector2I();
 	[Export] public TouchPad pad;
 	[Export] public Godot.Vector2 Array2D_Position = Godot.Vector2.Zero;
-	public PVZEngine.Data.Vector2i LawnIndex = new();
+	[Export] public Vector2I LawnIndex = new();
 	public CurrentObject Current_Object = null;
 	public bool Cheak_OK = false;
 	public class CurrentObject
@@ -304,11 +304,11 @@ public partial class Lawn : ColorRect{
 			{
 				if (Get_Object.Stackable_UUID.IndexOf("this") != -1 || Get_Object.Stackable_UUID.IndexOf("This") != -1)
 				{
-					if (Get_Object.Object_UUID == PlayerData.Temp_CardObject.Object_UUID)
+					if (Get_Object.ObjectId.Object_Name_ID == PlayerData.Temp_CardObject.ObjectId.Object_Name_ID)
 					{
 						return true;
 					}
-				}else if(Get_Object.Stackable_UUID.IndexOf(PlayerData.Temp_CardObject.Object_UUID) != -1)
+				}else if(Get_Object.Stackable_UUID.IndexOf(PlayerData.Temp_CardObject.ObjectId.Object_Name_ID) != -1)
 				{
 					return true;
 				}else if(Get_Object.Stackable_UUID.IndexOf("All") != -1 || Get_Object.Stackable_UUID.IndexOf("all") != -1)
@@ -376,9 +376,9 @@ public partial class Lawn : ColorRect{
 		{
 			NodeData.Get_Node<Node2D>("Equipment").AddChild(PlayerData.Temp_CardObject);
 			if (Current_Object.Has_Key_Object(Object_Type) != null){
-				if (Current_Object.Has_Key_Object(Object_Type).Object_UUID == PlayerData.Temp_CardObject.Object_UUID){
+				if (Current_Object.Has_Key_Object(Object_Type).ObjectId.Object_Name_ID == PlayerData.Temp_CardObject.ObjectId.Object_Name_ID){
 					Current_Object.Has_Key_Object(Object_Type).EmitSignal(Equipment.SignalName.Stacked_PlacementThis,PlayerData.Temp_CardObject);
-				}else if (Current_Object.Has_Key_Object(Object_Type).Stackable_UUID.IndexOf(PlayerData.Temp_CardObject.Object_UUID) != -1)
+				}else if (Current_Object.Has_Key_Object(Object_Type).Stackable_UUID.IndexOf(PlayerData.Temp_CardObject.ObjectId.Object_Name_ID) != -1)
 				{
 					Current_Object.Has_Key_Object(Object_Type).EmitSignal(Equipment.SignalName.Stacked_Placement,PlayerData.Temp_CardObject);
 				}

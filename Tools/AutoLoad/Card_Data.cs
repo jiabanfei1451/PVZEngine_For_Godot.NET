@@ -81,7 +81,7 @@ public partial class Card_Data : Node
 		GlobalData data;
 		data = new()
 		{
-			Scene = ResourceScene.LoadScene("res://Object/Equipment/Transmitter.tscn"),
+			Scene = ResourceScene.LoadScene("uid://wldy1n7d52ji"),
 			Sonsume = 100,
 			CD = 7.5f,
 			First_Time_RemoveCD = 3,

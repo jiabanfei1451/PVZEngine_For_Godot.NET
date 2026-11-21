@@ -26,7 +26,7 @@ public partial class Object_List : Node
         add_Object_Packed(ResourceScene.LoadScene("res://Object/Equipment/Furnace.tscn"),"MVZ2:Furnace","熔炉");
         add_Object_Packed(ResourceScene.LoadScene("res://Object/Equipment/Obsidian.tscn"),"MVZ2:Obsidian","黑曜石");
         add_Object_Packed(ResourceScene.LoadScene("res://Object/Equipment/Landmine.tscn"),"MVZ2:Landmine","地雷");
-
+        add_Object_Packed(ResourceScene.LoadScene("res://Object/bullet/Arrow/Arrow.tscn"),"MVZ2:Shoot","箭矢");
     }
     public void add_Object_Packed(PackedScene ObjectScene,String name,String CH_Name = "null")
     {
@@ -39,7 +39,7 @@ public partial class Object_List : Node
     /// </summary>
     /// <param name="ID_Object">实例ID</param>
     /// <returns></returns>
-    public static PackedScene Get_Packed(ID ID_Object)
+    public static PackedScene Get_Packed(ObjectID ID_Object)
     {
         var d = Get_GlobalNode.object_List;
         Godot.Collections.Array<String> Object_Name_ID = d.Object_Name_ID;
@@ -59,19 +59,33 @@ public partial class Object_List : Node
         }
         return Object_PackedScene[Index];
     }
+    
+    public static ObjectID Get_ID(PackedScene Index = null)
+    {
+        int SceneIndex = Get_GlobalNode.object_List.Object_PackedScene.IndexOf(Index);
+        if (SceneIndex >= 0){
+            ObjectID iD = new();
+            iD.CH_Name = Get_GlobalNode.object_List.Object_CH_Name[SceneIndex];
+            iD.Object_Name_ID = Get_GlobalNode.object_List.Object_Name_ID[SceneIndex];
+            iD.Object_ID = SceneIndex;
+            iD.Index_Mode = IndexMode.Name;
+            return iD;
+        }
+        return null;
+    }
     /// <summary>
     /// 获取ID
     /// </summary>
     /// <param name="Index"></param>
     /// <param name="indexMode"></param>
     /// <returns></returns>
-    public static ID Get_ID(String Index = "0",IndexMode indexMode = IndexMode.index)
+    public static ObjectID Get_ID(String Index = "0",IndexMode indexMode = IndexMode.index)
     {
         var d = Get_GlobalNode.object_List;
         Godot.Collections.Array<String> Object_Name_ID = d.Object_Name_ID;
         Godot.Collections.Array<PackedScene> Object_PackedScene = d.Object_PackedScene;
         Godot.Collections.Array<String> Object_CH_Name = d.Object_CH_Name;
-        ID iD = new();
+        ObjectID iD = new();
         // 转化格式(假)
         if (indexMode == IndexMode.Name)
         {
@@ -109,10 +123,9 @@ public partial class Object_List : Node
             iD.CH_Name = Object_CH_Name[iD.Object_ID];
         }
         iD.Index_Mode = indexMode;
-        if (iD.Object_ID == -1)
-        {
-            return null;
+        if (iD.Object_ID >= 0){
+            return iD;
         }
-        return iD;
+        return null;
     }
 }

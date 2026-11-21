@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using DEBUG;
 using Godot;
@@ -48,27 +49,27 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     [ExportGroup("status")]
     #region 生命组件
     [ExportSubgroup("Health_Module")]
-    [Export] public int HP = 200;
+    [Export] public int HP {get;set;} = 200;
     /// <summary>
     /// 最大血量
     /// </summary>
-    [Export] public int Max_HP = 200;
+    [Export] public int Max_HP {get;set;} = 200;
     /// <summary>
     /// 最小血量
     /// </summary>
-    [Export] public int Min_HP = 0;
+    [Export] public int Min_HP {get;set;} = 0;
     /// <summary>
     /// 生成此器械的草坪
     /// </summary>
-    [Export] public Lawn Summand_Lawn = null;
+    [Export] public Lawn Summand_Lawn {get;set;} = null;
     /// <summary>
     /// 已死亡
     /// </summary>
-    [Export] public bool kill = false;
+    [Export] public bool kill {get;set;} = false;
     /// <summary>
     /// 启用生命组件
     /// </summary>
-    [Export] public bool Enable_Health = true;
+    [Export] public bool Enable_Health {get;set;} = true;
     #endregion
     /// <summary>
     /// 启用状态
@@ -76,23 +77,23 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     #region 移动
     [ExportGroup("status")]
     [ExportSubgroup("Move")]
-    [Export] public Godot.Vector2 Speed = Vector2.Zero;
+    [Export] public Godot.Vector2 Speed {get;set;} = Vector2.Zero;
     /// <summary>
     /// 移动速度的倍率
     /// </summary>
-    [Export] public float Speed_Multiplication = 1;
+    [Export] public float Speed_Multiplication {get;set;} = 1;
     /// <summary>
     /// 移动状态
     /// </summary>
-    [Export] public bool Move_Ing = false;
+    [Export] public bool Move_Ing {get;set;} = false;
     /// <summary>
     /// 自动设置移动状态
     /// </summary>
-    [Export] public bool auto_Move = true;
+    [Export] public bool auto_Move {get;set;} = true;
     /// <summary>
     /// 移动类型
     /// </summary>
-    [Export] public Move_Type MoveType = Move_Type.Linear_Motion;
+    [Export] public Move_Type MoveType {get;set;} = Move_Type.Linear_Motion;
     /// <summary>
     /// 移动类型
     /// </summary>
@@ -112,11 +113,11 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     /// 基于Practical_Position的偏移量
     /// </summary>
     [ExportGroup("status")] 
-    [Export] public bool Enable = true;
+    [Export] public bool Enable {get;set;} = true;
     /// <summary>
     /// 伤害值
     /// </summary>
-    [Export] public int Damage = 0;
+    [Export] public int Damage {get;set;} = 0;
     /// <summary>
     /// 已检测到的object
     /// </summary>
@@ -124,11 +125,11 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     /// <summary>
     /// 检测阵营
     /// </summary>
-    [Export]public Godot.Collections.Array<StringName> detection_Group = LevelCheckdefault.defaultDetection_Group();
+    [Export]public Godot.Collections.Array<StringName> detection_Group {get;set;} = LevelCheckdefault.defaultDetection_Group();
     /// <summary>
     /// 排除阵营
     /// </summary>
-    [Export] public Godot.Collections.Array<StringName> Exclude_Group = LevelCheckdefault.defaultExclude_Group();
+    [Export] public Godot.Collections.Array<StringName> Exclude_Group {get;set;} = LevelCheckdefault.defaultExclude_Group();
     public Level_Master_Script Level_Object = null;
     internal bool Connect_Kill_Signal = false;
     public override void _ExitTree()
@@ -192,35 +193,44 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     /// </summary>
     public void Remove_Null_Object()
     {
-        if (!Enable)
-        {
-            Info.ERROR(Info.ERROR_Info.Invalid_method);
-            return;
-        }
-        foreach(LevelObject Body in Current_detection_object)
-        {
-            if (Cheak.is_null<LevelObject>(Body))
+        try{
+            if (!Enable)
             {
-                Current_detection_object.Remove(Body);
+                Info.ERROR(Info.ERROR_Info.Invalid_method);
+                return;
             }
-            else
+            foreach(LevelObject Body in Current_detection_object)
             {
-                if (Body.Enable_Health == true)
-                {
-                    if (Body.kill == true)
-                    {
-                        Current_detection_object.Remove(Body);
-                    }
-                }
-                else
+                if (Cheak.is_null<LevelObject>(Body))
                 {
                     Current_detection_object.Remove(Body);
                 }
-                if (Body.Enable == false)
+                else
                 {
-                    Body.QueueFree();
+                    if (Body.Enable_Health == true)
+                    {
+                        if (Body.kill == true)
+                        {
+                            Current_detection_object.Remove(Body);
+                        }
+                    }
+                    else
+                    {
+                        Current_detection_object.Remove(Body);
+                    }
+                    if (Body.Enable == false)
+                    {
+                        Body.QueueFree();
+                    }
                 }
             }
+        }catch(Exception EX)
+        {
+            DEBUG.Info.Print(EX);
+        }
+        finally
+        {
+            
         }
     }
     /// <summary>

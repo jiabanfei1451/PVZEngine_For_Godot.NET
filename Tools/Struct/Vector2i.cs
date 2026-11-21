@@ -19,6 +19,11 @@ public struct Vector2i
         T.Y = y;
         return T;
     }
+    public static Godot.Vector2I New(Vector2i vector)
+    {
+        Godot.Vector2I T = new(vector.X,vector.Y);
+        return T;
+    }
     public static Vector2i New(Godot.Vector2I vector)
     {
         Vector2i T = new();

@@ -62,17 +62,17 @@ public partial class Level_Master_Script : Node2D{
 	/// 节点生成
 	/// </summary>
 	[ExportGroup("Layer")]
-	[Export] public String[] Node_Index {get;set;} = ["Shadow","Equipment","Monster","Shoot","particle","Effect","LightColor","LightMask","Item"];
+	[Export] public String[] Node_Index {get;set;} = ["Shadow","Lawn","Equipment","Monster","Shoot","particle","Effect","LightColor","LightMask","Item"];
 	/// <summary>
 	/// 图层分配
 	/// </summary>
-	[Export] public int[] Layer_Index {get;set;} = [0,2,3,3,4,5,6,6,9];
+	[Export] public int[] Layer_Index {get;set;} = [0,1,2,3,3,4,5,6,6,9];
 	/// <summary>
 	/// 类型分配
 	/// 0 = Node,
 	/// 1 = Viewport,
 	/// </summary>
-	[Export] public int[] Node_Type {get;set;} = [2,0,0,0,0,0,0,2,0];
+	[Export] public int[] Node_Type {get;set;} = [2,0,0,0,0,0,0,0,2,0];
 	/// <summary>
 	/// 选中的草坪
 	/// </summary>
@@ -380,6 +380,15 @@ public partial class Level_Master_Script : Node2D{
 		}else if(Seed_Why.IndexOf("/Star") != -1)
 		{
 			Level_Script.Star_Fragment = PlayerData.Savedata.Max_Star_Fragment;
+		}else if(Seed_Why.IndexOf("/S") != -1)
+		{
+			PVZEngine.Save.SaveGame game = new();
+			game.SaveLevel();
+			game.Save();
+		}else if(Seed_Why.IndexOf("/L") != -1)
+		{
+			PVZEngine.Save.SaveGame game = PVZEngine.Save.SaveGame.Load();
+			game.LoadLevel();
 		}
 	}
 	#region 草坪方法
@@ -410,7 +419,9 @@ public partial class Level_Master_Script : Node2D{
 		}
 		foreach(Godot.Collections.Array<Lawn> lawns in Lawn_Data)
 		{
-			Lawn_Current_Color(lawns[This.ArrayPosition.X]);
+			if (This.ArrayPosition.X < lawns.Count){
+				Lawn_Current_Color(lawns[This.ArrayPosition.X]);
+			}
 		}
 		GlobalData Temp_data = card_Data.Selected_raw_Object.Mode_Data.gameing_Mode.Card_Data;
 		String Get_Object_Type = Temp_data.Object_Type.ToString();
@@ -460,6 +471,7 @@ public partial class Level_Master_Script : Node2D{
 	{
 		int SummandY = 0;
 		int SummandX = 0;
+		int LenY = 0;
 		foreach(PVZEngine.Data.LawnSummandData summandData in LawnSummandData){
 			Godot.Collections.Array<Godot.Collections.Array<int>> Lawn_Array = summandData.Lawn_Array;
 			Godot.Vector2 Lawn_Spawn_Offect = summandData.Lawn_Spawn_Offect;
@@ -483,7 +495,7 @@ public partial class Level_Master_Script : Node2D{
 						Lawn.Position = Lawn_Spawn_Position + new Godot.Vector2(Lawn_Spawn_Offect.X * X,Lawn_Spawn_Offect.Y * Y) + Spawn_Offset;
 						Lawn.Name = "Lawn(" + string.Concat(X) + "," + string.Concat(Y) + ")";
 						Object_Kill += Lawn.Object_Kill;
-						Lawn_Data[Y].Add(Lawn);
+						Lawn_Data[Y + LenY].Add(Lawn);
 						Lawn_Node.AddChild(Lawn);
 						Lawn.LawnIndex.X = SummandX;
 						Lawn.LawnIndex.Y = SummandY;
@@ -499,6 +511,7 @@ public partial class Level_Master_Script : Node2D{
 				SummandX = 0;
 				SummandY += 1;
 			}
+			LenY += Lawn_Array.Count;
 		}
 	}
 	/// <summary>

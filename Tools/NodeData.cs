@@ -41,27 +41,36 @@ public static class NodeData
     /// <returns></returns>
     public static T Get_Node<T>(String Index = "null",Mode_Type Get_Mode = Mode_Type.Name) where T : class
     {
-        Node Get;
-        int index = -1;
-        switch (Get_Mode){
-            case Mode_Type.Name:
-                index = Node_Data[1].IndexOf(Index);
-                // DEBUG.Info.Print(index);
-                break;
-            case Mode_Type.Index:
-                index = int.Parse(Index);
-                break;
+        Node Get = null;
+        try{
+            int index = -1;
+            switch (Get_Mode){
+                case Mode_Type.Name:
+                    index = Node_Data[1].IndexOf(Index);
+                    // DEBUG.Info.Print(index);
+                    break;
+                case Mode_Type.Index:
+                    index = int.Parse(Index);
+                    break;
+            }
+            // DEBUG.Info.Print(Node_Data[0].Count);
+            if (index < 0){return null;}
+            if (index < Node_Data[0].Count)
+            {
+                // DEBUG.Info.Print($"索引:{index}");
+                Get = (Node)Node_Data[0][index];
+            }else
+            {
+                // DEBUG.Info.Print("?");
+                Get = null;
+            }
+        }catch(Exception EX)
+        {
+            DEBUG.Info.PrintErr(EX);
         }
-        // DEBUG.Info.Print(Node_Data[0].Count);
-        if (index < 0){return null;}
-        if (index < Node_Data[0].Count)
+        finally
         {
-            // DEBUG.Info.Print($"索引:{index}");
-            Get = (Node)Node_Data[0][index];
-        }else
-        {
-            // DEBUG.Info.Print("?");
-            Get = null;
+            
         }
         return Get as T;
     }

@@ -48,7 +48,7 @@ public static class Cheak
 		}
 		if (ObjectData.Reliant_UUID.Count > 0)
 		{
-			if (ObjectData.Reliant_UUID.IndexOf(levelObject.Object_UUID) != -1)
+			if (ObjectData.Reliant_UUID.IndexOf(levelObject.ObjectId.Object_Name_ID) != -1)
 			{
 				return true;
 			}

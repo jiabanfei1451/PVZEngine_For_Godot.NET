@@ -2,8 +2,8 @@ using Godot;
 using System;
 using PVZEngine.Enum;
 using PVZEngine.Static;
-using System.Text;
 using PVZEngine.Effect;
+using PVZEngine.Module;
 namespace PVZEngine.Object.Module;
 [Icon("uid://dwrrtr5iyf6yq")]
 public partial class ObjectPhysics : Node2D
@@ -12,24 +12,24 @@ public partial class ObjectPhysics : Node2D
     /// 光源生成
     /// </summary>
     [ExportGroup("Light")]
-    [Export] public Godot.Collections.Array<PVZEngine.Data.LightData> LightArray = new();
+    [Export] public Godot.Collections.Array<PVZEngine.Data.LightData> LightArray {get;set;} = new();
     /// <summary>
     /// 当前草坪行数索引
     /// </summary>
     [ExportGroup("Index")]
-    [Export] public int Lawn_Index = -1;
+    [Export] public int Lawn_Index {get;set;} = -1;
     /// <summary>
     /// 检测范围
     /// </summary>
-    [Export] public Godot.Vector2I Cheak_Index_Scoop = new(0,0);
+    [Export] public Godot.Vector2I Cheak_Index_Scoop {get;set;} = new(0,0);
     /// <summary>
     /// 可被其他物体跨行检测的范围
     /// </summary>
-    [Export] public Godot.Vector2I Cheak_Lawn_Index_Scoop = new(0,0);
+    [Export] public Godot.Vector2I Cheak_Lawn_Index_Scoop {get;set;} = new(0,0);
     /// <summary>
     /// 自动设置草坪行数索引
     /// </summary>
-    [Export] public bool AutoSet_Lawn_Index = true;
+    [Export] public bool AutoSet_Lawn_Index {get;set;} = true;
     /// <summary>
     /// 检测
     /// </summary>
@@ -37,69 +37,69 @@ public partial class ObjectPhysics : Node2D
     /// 可检测高度等级
     /// </summary>
     [ExportGroup("Cheak")]
-    [Export] public Godot.Vector2 Cheak_Height_Level_Scoop = new Vector2(-1,1);
+    [Export] public Godot.Vector2 Cheak_Height_Level_Scoop {get;set;} = new Vector2(-1,1);
     /// <summary>
     /// 当前高度等级
     /// </summary>
-    [Export] public float Height_Level = 2;
+    [Export] public float Height_Level {get;set;} = 2;
     /// <summary>
     /// 速度
     /// </summary>
     [ExportGroup("Vector")]
-    [Export] public Godot.Vector2 position_Offset = Godot.Vector2.Zero;
+    [Export] public Godot.Vector2 position_Offset {get;set;} = Godot.Vector2.Zero;
     /// <summary>
     /// 启用物理
     /// </summary>
     [ExportGroup("Physics")]
-    [Export] public bool Physics_Enable = true;
+    [Export] public bool Physics_Enable {get;set;} = true;
     /// <summary>
     /// 重量
     /// </summary>发`
-    [Export] public float Weight = 5;
+    [Export] public float Weight {get;set;} = 5;
     /// <summary>
     /// 坐标类型
     /// </summary>
-    [Export] public PositionType PositionType = PositionType.GlobalPosition;
+    [Export] public PositionType PositionType {get;set;} = PositionType.GlobalPosition;
     /// <summary>
     /// 跟随当前重量增加加速度
     /// </summary>
-    [Export] public bool Follow_the_current_weight = false;
+    [Export] public bool Follow_the_current_weight {get;set;} = false;
     /// <summary>
     /// 下落加速度
     /// </summary>
-    [Export] public float Falling_Acceleration = 1;
+    [Export] public float Falling_Acceleration {get;set;} = 1;
     /// <summary>
     /// 检测高度偏移（用于校准）
     /// </summary>
-    [Export] public float Cheak_Height_Offset = 0;
+    [Export] public float Cheak_Height_Offset {get;set;} = 0;
     /// <summary>
     /// 高度
     /// </summary>
-    [Export] public float Height = 0;
+    [Export] public float Height {get;set;} = 0;
     /// <summary>
     /// 最低高度
     /// </summary>
-    [Export] public float min_Height = 0;
+    [Export] public float min_Height {get;set;} = 0;
     /// <summary>
     /// 额外高度
     /// </summary>
-    [Export] public float Extra_Height = 0;
+    [Export] public float Extra_Height {get;set;} = 0;
     /// <summary>
     /// 可检测高度
     /// </summary>
-    [Export] public Godot.Vector2 Cheak_Height_Scoop = new(-5,15);
+    [Export] public Godot.Vector2 Cheak_Height_Scoop {get;set;} = new(-5,15);
     /// <summary>
     /// 实际坐标
     /// </summary>
-    [Export] public Godot.Vector2 practical_Position = new Godot.Vector2();
+    [Export] public Godot.Vector2 practical_Position {get;set;} = new Godot.Vector2();
     /// <summary>
     /// 加速度
     /// </summary>
-    [Export] public float Acceleration = 10;
+    [Export] public float Acceleration {get;set;} = 10;
     /// <summary>
     /// 物理已完成初始化
     /// </summary>
-    [Export] internal bool Physics_Initialization = false;
+    [Export] internal bool Physics_Initialization {get;set;} = false;
     /// <summary>
     /// 阴影场景
     /// </summary>
@@ -111,78 +111,67 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 阴影尺寸乘积
     /// </summary>
-    [Export] public Godot.Vector2 Shadow_SizeMultiplication = new Vector2(1,1);
+    [Export] public Godot.Vector2 Shadow_SizeMultiplication {get;set;} = new Vector2(1,1);
     /// <summary>
     /// 阴影最小尺寸
     /// </summary>
-    [Export] public Godot.Vector2 MinShadow_Size = Vector2.Zero;
+    [Export] public Godot.Vector2 MinShadow_Size {get;set;} = Vector2.Zero;
     /// <summary>
     /// 阴影尺寸
     /// </summary>
-    [Export] public Godot.Vector2 Shadow_Size = new(1,1);
+    [Export] public Godot.Vector2 Shadow_Size {get;set;} = new(1,1);
     /// <summary>
     /// 阴影偏移
     /// </summary>
-    [Export] public Godot.Vector2 Shadow_Offset = Vector2.Zero;
+    [Export] public Godot.Vector2 Shadow_Offset {get;set;} = Vector2.Zero;
     /// <summary>
     /// 临时坐标
     /// </summary>
     float Temp_Position_Y = -1;
-    internal Level_Master_Script level {get;set;} = null;
+    internal Level_Master_Script level = null;
     /// <summary>
     /// 标签
     /// </summary>
     [ExportGroup("Misc")]
-    [Export] public Godot.Collections.Array<String> Tags = new(){};
+    [Export] public Godot.Collections.Array<String> Tags {get;set;} = new(){};
     /// <summary>
     /// 物体类型
     /// </summary>
-    [Export] public ObjectType Object_Type = ObjectType.Null;
+    [Export] public ObjectType Object_Type {get;set;} = ObjectType.Null;
     /// <summary>
     /// 对象内部ID
     /// </summary>
-    [Export] public String Object_UUID = "MVZ2:";
-    /// <summary>
-    /// 对象名称
-    /// </summary>
-    [Export] public String Object_Name = "";
-    /// <summary>
-    /// 对象ID
-    /// </summary>
-    [Export] public int Object_ID = -1;
-    /// <summary>
-    /// 搜索索引模式
-    /// </summary>
-    [Export] public IndexMode Index_Mode = IndexMode.Name;
+    [Export] public PVZEngine.Type.ObjectID ObjectId {get;set;}
+    [Export] public bool Auto_GetID {get;set;} = true;
     /// <summary>
     /// 启用放置依赖
     /// </summary>
     [ExportGroup("Placed")]
-    [Export] public bool Enable_Placed_Reliant = false;
+    [Export] public bool Enable_Placed_Reliant {get;set;} = false;
     /// <summary>
     /// 自动释放
     /// </summary>
-    [Export] public bool Auto_Free_Reliant = true;
+    [Export] public bool Auto_Free_Reliant {get;set;} = true;
     /// <summary>
     /// 需要保存的属性
     /// </summary>
-    [Export] public Godot.Collections.Array<String> Save_Property = new(){};
+    [Export] public Godot.Collections.Array<String> Save_Property {get;set;} = new(){};
     /// <summary>
     /// 依赖物体UUID
     /// </summary>
-    [Export] public Godot.Collections.Array<String> Reliant_UUID = new();
+    [Export] public Godot.Collections.Array<String> Reliant_UUID {get;set;} = new();
     /// <summary>
     /// 依赖标签
     /// </summary>
-    [Export] public Godot.Collections.Array<String> Reliant_Tag = new();
+    [Export] public Godot.Collections.Array<String> Reliant_Tag {get;set;} = new();
     /// <summary>
     /// 不可放置类型
     /// </summary>
-    [Export] public Godot.Collections.Array<ObjectType> Cannot_place_Type = new(){};
+    [Export] public Godot.Collections.Array<ObjectType> Cannot_place_Type {get;set;} = new(){};
     /// <summary>
     /// 可叠加放置
     /// </summary>
-    [Export] public bool Stackable = false;
+    [Export] public bool Stackable {get;set;} = false;
     /// <summary>
     /// 默认生成层
     /// </summary>
@@ -190,7 +179,7 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 叠加放置UUID白名单
     /// </summary>
-    [Export] public Godot.Collections.Array<String> Stackable_UUID = new(){};
+    [Export] public Godot.Collections.Array<String> Stackable_UUID {get;set;} = new(){};
     public override void _ExitTree() {
         base._ExitTree();
         if (!Cheak.is_null<Node2D>(Shadow))
@@ -210,6 +199,18 @@ public partial class ObjectPhysics : Node2D
         else
         {
             practical_Position = Position;
+        }
+    }
+    public override void _Ready() {
+        base._Ready();
+        if (!Physics_Enable){return;}
+        if (Auto_GetID)
+        {
+            if (ObjectId is null){return;}
+            GD.Print(ObjectId.PackedScenePath);
+            PackedScene scene = ResourceScene.LoadScene(ObjectId.PackedScenePath);
+            ObjectId = Object_List.Get_ID(scene);
+            Auto_GetID = false;
         }
     }
     internal virtual void Summand_Light()
