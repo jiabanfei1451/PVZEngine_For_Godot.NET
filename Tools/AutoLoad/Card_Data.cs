@@ -78,7 +78,8 @@ public partial class Card_Data : Node
 		base._Ready();
 		Initialization();
 		#region 增加器械数据
-		GlobalData data = new()
+		GlobalData data;
+		data = new()
 		{
 			Scene = ResourceScene.LoadScene("res://Object/Equipment/Transmitter.tscn"),
 			Sonsume = 100,

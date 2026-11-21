@@ -143,7 +143,7 @@ public partial class Equipment : LevelObject
             float y = -PVZEngine.Module.Random.NextFloat_32(21,0);
             float x2 = PVZEngine.Module.Random.NextFloat_32(24,0);
             float y2 = PVZEngine.Module.Random.NextFloat_32(22,0);
-            Vector2 Summand_Position = new(x + x2,y + y2);
+            Godot.Vector2 Summand_Position = new(x + x2,y + y2);
             PackedScene packed = ResourceScene.LoadScene("res://Object/Effect/Particle/Default.tscn");
             MVZ2.Object.Particie Summand_Particie = packed.Instantiate<MVZ2.Object.Particie>();
             Summand_Particie.Enable = false;
@@ -237,7 +237,7 @@ public partial class Equipment : LevelObject
             float y = -PVZEngine.Module.Random.NextFloat_32(21,0);
             float x2 = PVZEngine.Module.Random.NextFloat_32(24,0);
             float y2 = PVZEngine.Module.Random.NextFloat_32(22,0);
-            Vector2 Summand_Position = new(x + x2,y + y2);
+            Godot.Vector2 Summand_Position = new(x + x2,y + y2);
             PackedScene packed = ResourceScene.LoadScene("res://Object/Effect/Particle/Default.tscn");
             MVZ2.Object.Particie Summand_Particie = packed.Instantiate<MVZ2.Object.Particie>();
             Summand_Particie.Enable = false;

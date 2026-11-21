@@ -11,6 +11,8 @@ using PVZEngine.Object.Module;
 using PVZEngine.Static;
 using System.Text.Json;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace PVZEngine;
 /// <summary>
@@ -36,6 +38,7 @@ public partial class Level_Master_Script : Node2D{
 	[Signal]
 	public delegate void Object_Change_HeightEventHandler(ObjectPhysics Data_Object);
 	#region 变量
+	[ExportCategory("看什么?难道你不知道脚本里有中文注释吗?")]
 	[Export] public bool DeBug {get;set;} = true;
 	[ExportGroup("Light")]
 	[Export]public bool Enable_Light {
@@ -54,7 +57,6 @@ public partial class Level_Master_Script : Node2D{
 	[Export(PropertyHint.Range,"0,10,0.01")] public float Light_Intensity = 1;
 	[Export(PropertyHint.Range,"0,10,0.01")] public float LightColor_Intensity = 1;
 	public ColorRect Light_Mask = null;
-	[ExportCategory("看什么?难道你不知道脚本里有中文注释吗?")]
 	[ExportGroup("BGM")][Export] public String Level_BGMID {get;set;} = "0";
 	/// <summary>
 	/// 节点生成
@@ -77,20 +79,9 @@ public partial class Level_Master_Script : Node2D{
 	[ExportGroup("Variant")]
 	[Export] public PVZEngine.Object.Lawn Selected_Lawn {get;set;}
 	/// <summary>
-	/// 草坪生成数组
+	/// 草坪生成数据
 	/// </summary>
-	[Export] public Godot.Collections.Array<Godot.Collections.Array<int>> Lawn_Array {get;set;} = new Godot.Collections.Array<Godot.Collections.Array<int>>()
-	{
-		new Godot.Collections.Array<int>(){0,0,0,0,0,0,0,0,0},
-		new Godot.Collections.Array<int>(){0,0,0,0,0,0,0,0,0},
-		new Godot.Collections.Array<int>(){0,0,0,0,0,0,0,0,0},
-		new Godot.Collections.Array<int>(){0,0,0,0,0,0,0,0,0},
-		new Godot.Collections.Array<int>(){0,0,0,0,0,0,0,0,0},
-	};
-	/// <summary>
-	/// 草坪偏移
-	/// </summary>
-	[Export] public Godot.Collections.Array<Godot.Collections.Array<Godot.Vector2>> Lawn_Offset_Array {get;set;} = new Godot.Collections.Array<Godot.Collections.Array<Vector2>>([[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]);
+	[Export] public Godot.Collections.Array<PVZEngine.Data.LawnSummandData> LawnSummandData = new(){new()};
 	/// <summary>
 	/// 草坪实例化后的数据
 	/// </summary>
@@ -102,19 +93,11 @@ public partial class Level_Master_Script : Node2D{
 	/// <summary>
 	/// 物体索引坐标偏移
 	/// </summary>
-	[Export] public Godot.Collections.Array<Godot.Vector2> Check_Position_Offset {get;set;} = new Godot.Collections.Array<Vector2>();
+	[Export] public Godot.Collections.Array<Godot.Vector2> Check_Position_Offset {get;set;} = new Godot.Collections.Array<Godot.Vector2>();
 	/// <summary>
 	/// 自动生成草坪
 	/// </summary>
 	[Export] public bool Auto_Spawn_Lawn {get;set;} = true;
-	/// <summary>
-	/// 草坪每次生成后的偏移
-	/// </summary>
-	[Export] public Godot.Vector2 Lawn_Spawn_Offect {get;set;} = new Godot.Vector2(80,80);
-	/// <summary>
-	/// 草坪开始生成坐标
-	/// </summary>
-	[Export] public Godot.Vector2 Lawn_Spawn_Position {get;set;} = new Godot.Vector2(-428,-181);
 	/// <summary>
 	/// 用于实例化的草坪场景
 	/// </summary>
@@ -161,6 +144,11 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	[Export] public bool Game_Reset_Done {get;set;} = false;
 	/// <summary>
+	/// 生成坐标数据
+	/// </summary>
+	[ExportGroup("Summand")]
+	[Export] public Godot.Collections.Array<PVZEngine.Data.SummandPositionData> Summand_PositionData = new(){new()};
+	/// <summary>
 	/// 已完成种子获取
 	/// </summary>
 	internal bool Seed_OK {get;set;} = false;
@@ -202,7 +190,12 @@ public partial class Level_Master_Script : Node2D{
 			NodeData.Add_Node(Camera2D,"Camera2D");
 		}
 		Lawn_Node = GetNode<Node2D>("Lawn");
-		Lawn_Data.Resize(Lawn_Array.Count);
+		int GetAllDataCount = 0;
+		foreach(PVZEngine.Data.LawnSummandData data in LawnSummandData)
+		{
+			GetAllDataCount += data.Lawn_Array.Count;
+		}
+		Lawn_Data.Resize(GetAllDataCount);
 		if (Auto_Spawn_Lawn)
 		{
 			Summand_Lawn();
@@ -218,6 +211,7 @@ public partial class Level_Master_Script : Node2D{
 		Light_Mask = LightMask;
 		NodeData.Get_Node<Node2D>("LightMask").AddChild(LightMask);
 		Light_Mask.Visible = Enable_LightMask;
+		Summand_Initialization();
 	}
 	/// <summary>
 	/// 用于摄像机缓动的process
@@ -262,6 +256,27 @@ public partial class Level_Master_Script : Node2D{
 		Camera2D_Easing.Parallel().TweenProperty(Camera2D,new Godot.NodePath(Godot.Camera2D.PropertyName.Zoom),Camera2D_Zoom,delta * (double)Fps_Easing);
 	}
 	/// <summary>
+	/// 生成初始化
+	/// </summary>
+	public virtual void Summand_Initialization()
+	{
+		if (Summand_PositionData.Count <= 0){return;}
+		Summand.Data = new();
+		List<PVZEngine.Data.Vector2> SummandPos = new();
+		List<PVZEngine.Data.Vector2i> SummandSco = new();
+		List<PVZEngine.Enum.ObjectType> SummandType = new();
+		foreach(PVZEngine.Data.SummandPositionData Pos in Summand_PositionData)
+		{
+			SummandPos.Add(PVZEngine.Data.Vector2.New(Pos.SummandPosition));
+			SummandSco.Add(PVZEngine.Data.Vector2i.New(Pos.SummandScoop));
+			SummandType.Add(Pos.Summand_ObjectType);
+		}
+		Summand.Data.Summand_Position = SummandPos.ToArray();
+		Summand.Data.YPosition_Offset = SummandSco.ToArray();
+		Summand.Data.Summand_ObjectType = SummandType.ToArray();
+		Summand_PositionData.Clear();
+	}
+	/// <summary>
 	/// 选卡
 	/// </summary>
 	public async void choose_Card()
@@ -281,7 +296,7 @@ public partial class Level_Master_Script : Node2D{
         PackedScene Scene = ResourceScene.LoadScene("uid://bllinxtvttldn");
 		Get_GlobalNode.Get_Muisc_Engine(GetTree()).new_playMuisc("CH:选卡");
 		Camera2D_Zoom = new Godot.Vector2(1.1f,1.1f);
-        Twee.TweenProperty(this,new Godot.NodePath(PVZEngine.Level_Master_Script.PropertyName.Camera2D_Position),new Vector2(140,-25),1);
+        Twee.TweenProperty(this,new Godot.NodePath(PVZEngine.Level_Master_Script.PropertyName.Camera2D_Position),new Godot.Vector2(140,-25),1);
 		await ToSignal(Twee,Tween.SignalName.Finished);
 		CanvasLayer layer = Scene.Instantiate<CanvasLayer>();
 		AddChild(layer);
@@ -326,7 +341,7 @@ public partial class Level_Master_Script : Node2D{
 		NodeData.Get_Node<Node2D>("Equipment").YSortEnabled = true;
 		NodeData.Get_Node<Node2D>("Monster").YSortEnabled = true;
 		Tween Twee = CreateTween();
-		Twee.TweenProperty(this,new Godot.NodePath(Level_Master_Script.PropertyName.Camera2D_Position),new Vector2(-105,-25),1);
+		Twee.TweenProperty(this,new Godot.NodePath(Level_Master_Script.PropertyName.Camera2D_Position),new Godot.Vector2(-105,-25),1);
 		await ToSignal(Twee,Tween.SignalName.Finished);
 	}
 	/// <summary>
@@ -438,35 +453,51 @@ public partial class Level_Master_Script : Node2D{
 			lawn.Color = new Color(1,1,1,0.5f);
 		}
 	}
+	/// <summary>
+	/// 生成草坪
+	/// </summary>
 	public void Summand_Lawn()
 	{
-		for (int Y = 0; Y < Lawn_Array.Count; Y++)
-		{
-			for (int X = 0; X < Lawn_Array[Y].Count; X++)
+		int SummandY = 0;
+		int SummandX = 0;
+		foreach(PVZEngine.Data.LawnSummandData summandData in LawnSummandData){
+			Godot.Collections.Array<Godot.Collections.Array<int>> Lawn_Array = summandData.Lawn_Array;
+			Godot.Vector2 Lawn_Spawn_Offect = summandData.Lawn_Spawn_Offect;
+			Godot.Vector2 Lawn_Spawn_Position = summandData.Lawn_Spawn_Position;
+			Godot.Collections.Array<Godot.Collections.Array<Godot.Vector2>> Lawn_Offset_Array = summandData.Lawn_Offset_Array;
+			for (int Y = 0; Y < Lawn_Array.Count; Y++)
 			{
-				Godot.Vector2 Spawn_Offset = new Godot.Vector2(0,0);
-				if (Y < Lawn_Offset_Array.Count)
+				for (int X = 0; X < Lawn_Array[Y].Count; X++)
 				{
-					if (X < Lawn_Offset_Array[Y].Count)
+					Godot.Vector2 Spawn_Offset = new Godot.Vector2(0,0);
+					if (Y < Lawn_Offset_Array.Count)
 					{
-						Spawn_Offset = Lawn_Offset_Array[Y][X];
+						if (X < Lawn_Offset_Array[Y].Count)
+						{
+							Spawn_Offset = Lawn_Offset_Array[Y][X];
+						}
 					}
-				}
-				if (Lawn_Array[Y][X] == 0){
-				Lawn Lawn = LawnScene.Instantiate<Lawn>();
-				Lawn.ArrayPosition = new Vector2I(X,Y);
-				Lawn.Position = Lawn_Spawn_Position + new Godot.Vector2(Lawn_Spawn_Offect.X * X,Lawn_Spawn_Offect.Y * Y) + Spawn_Offset;
-				Lawn.Name = "Lawn(" + string.Concat(X) + "," + string.Concat(Y) + ")";
-				Object_Kill += Lawn.Object_Kill;
-				Lawn_Data[Y].Add(Lawn);
-				Lawn_Node.AddChild(Lawn);
-				}else if(Lawn_Array[Y][X] == -1)
-				{
-					Lawn s = new Lawn();
-					Lawn_Data[Y].Add(s);
-					s.QueueFree();
+					if (Lawn_Array[Y][X] == 0){
+						Lawn Lawn = LawnScene.Instantiate<Lawn>();
+						Lawn.ArrayPosition = new Vector2I(X,Y);
+						Lawn.Position = Lawn_Spawn_Position + new Godot.Vector2(Lawn_Spawn_Offect.X * X,Lawn_Spawn_Offect.Y * Y) + Spawn_Offset;
+						Lawn.Name = "Lawn(" + string.Concat(X) + "," + string.Concat(Y) + ")";
+						Object_Kill += Lawn.Object_Kill;
+						Lawn_Data[Y].Add(Lawn);
+						Lawn_Node.AddChild(Lawn);
+						Lawn.LawnIndex.X = SummandX;
+						Lawn.LawnIndex.Y = SummandY;
+					}else if(Lawn_Array[Y][X] == -1)
+					{
+						Lawn s = new Lawn();
+						Lawn_Data[Y].Add(s);
+						s.QueueFree();
 
+					}
+					SummandX += 1;
 				}
+				SummandX = 0;
+				SummandY += 1;
 			}
 		}
 	}
@@ -475,7 +506,12 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	public void Reset_Lawn_Index()
 	{
-		Lawn_Object_Index.Resize(Lawn_Array.Count);
+		int GetAllDataCount = 0;
+		foreach(PVZEngine.Data.LawnSummandData data in LawnSummandData)
+		{
+			GetAllDataCount += data.Lawn_Array.Count;
+		}
+		Lawn_Object_Index.Resize(GetAllDataCount);
 	}
 	/// <summary>
 	/// 移动索引物体
@@ -542,12 +578,12 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	/// <param name="This"></param>
 	/// <returns></returns>
-	public int Get_LawnIndex(Godot.Vector2 Position,Godot.Vector2 Offset_Position)
+	public int Get_LawnIndex(Godot.Vector2 Position,Godot.Vector2 Offset_Position,int ArrayIndex = 0)
     {
 		// 草坪生成坐标
-        float Position_Y = Lawn_Spawn_Position.Y;
+        float Position_Y = LawnSummandData[ArrayIndex].Lawn_Spawn_Position.Y;
         // 增加索引偏移量
-		float IndexNumber = Lawn_Spawn_Offect.Y;
+		float IndexNumber = LawnSummandData[ArrayIndex].Lawn_Spawn_Offect.Y;
 		// 当前草坪索引
         int Current_Lawn_Index = 0;
 		// 最大索引
@@ -581,14 +617,14 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	/// <param name="This"></param>
 	/// <returns></returns>
-	public Vector2 Get_This_Offset (Godot.Vector2 position)
+	public Godot.Vector2 Get_This_Offset (Godot.Vector2 position)
 	{
-		Vector2 Back_Vector2 = Vector2.Zero;
+		Godot.Vector2 Back_Vector2 = Godot.Vector2.Zero;
 		if (Check_Position_Offset.Count == 0)
 		{
-			return Vector2.Zero;
+			return Godot.Vector2.Zero;
 		}
-		foreach(Vector2 vector in Check_Position_Offset)
+		foreach(Godot.Vector2 vector in Check_Position_Offset)
 		{
 			Back_Vector2 = vector;
 			if (position.X > vector.X)
@@ -610,7 +646,7 @@ public partial class Level_Master_Script : Node2D{
 		{
 			return -1;
 		}
-		foreach(Vector2 vector in Check_Position_Offset)
+		foreach(Godot.Vector2 vector in Check_Position_Offset)
 		{
 			Back_Index += 1;
 			if (This.Position.X > vector.X)

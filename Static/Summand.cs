@@ -30,16 +30,23 @@ public static class Summand
     /// 生成物体
     /// </summary>
     /// <param name="Number"></param>
-    public static async void Summand_Object(int Number)
+    /// <param name="Summand_OffsetIndex">指定的索引行当值为负值则随机</param>
+    public static async void Summand_Object(int Number,int Summand_OffsetIndex = -1,int Array_Index = 0)
     {
         // 条件判断
+        // 生成坐标数据数组检测
+        if (Data.Summand_Position.Length <= 0 && Data.Summand_Position.Length <= 0){return;}
+        if (Summand_OffsetIndex >= Data.Summand_Position.Length)
+        {
+            Summand_OffsetIndex = Data.Summand_Position.Length - 1;
+        }
         if (Cheak.is_null<Summand_Data>(Summand.Data)){return;}
         if (Cheak.is_null<List<ID>>(Summand.Data.Summand_List)){return;}
         if (Data.Summand_List.Count <= 0){return;}
         if (Cheak.is_null<Level_Master_Script>(Level_Script.Level_Object)){return;}
         // 获取生成坐标
-        Vector2 Summand_Position = Level_Script.Level_Object.Lawn_Spawn_Position;
-        Vector2 Summand_Offset = Level_Script.Level_Object.Lawn_Spawn_Offect;
+        Godot.Vector2 Summand_Position = Level_Script.Level_Object.LawnSummandData[Array_Index].Lawn_Spawn_Position;
+        Godot.Vector2 Summand_Offset = Level_Script.Level_Object.LawnSummandData[Array_Index].Lawn_Spawn_Offect;
         System.Random Ran = new System.Random();
         set_Timer();
         if (Data.Summand_ing == false)
@@ -56,22 +63,37 @@ public static class Summand
                     Random_Get = Data.Summand_List[Ran.Next(0,Temp_Count)]; 
                     PackedScene GetPacked = Object_List.Get_Packed(Random_Get);
                     GlobalData get_carddata = Card_Data.Get_CardData(GetPacked);
-                    Vector2 Summand_Scale = new(1,1);
-                    Vector2 Summanc_Offset = new(40,48);
-
+                    Godot.Vector2 Summand_Scale = new(1,1);
+                    Godot.Vector2 Summanc_Offset = new(40,48);
+                    if (Summand_OffsetIndex < 0)
+                    {
+                        Summand_OffsetIndex = Data.random.RandiRange(0,Data.Summand_Position.Length - 1);
+                    }
                     if (get_carddata.is_Null == false)
                     {
                         Summand_Scale = get_carddata.Map_Scale;
                         Summanc_Offset = get_carddata.Map_Offset;
                     }
                     // 计算生成后坐标
-                    Vector2 Object_Summand_Offset = new Vector2(0,Data.random.RandiRange(Data.YPosition_Offset.X,Data.YPosition_Offset.Y) * Summand_Offset.Y);
-                    Vector2 Data_Summand_Position = new Vector2(Data.Summand_Position.X,Data.Summand_Position.Y);
+                    DEBUG.Info.Print(Summand_OffsetIndex);
+                    PVZEngine.Data.Vector2 GetSummand_Position = Data.Summand_Position[Summand_OffsetIndex];
+                    PVZEngine.Data.Vector2i GetSummand_YOffset = Data.YPosition_Offset[Summand_OffsetIndex];
+                    Godot.Vector2 Object_Summand_Offset = new Godot.Vector2(0,Data.random.RandiRange(GetSummand_YOffset.X,GetSummand_YOffset.Y) * Summand_Offset.Y);
+                    Godot.Vector2 Data_Summand_Position = new Godot.Vector2(GetSummand_Position.X,GetSummand_Position.Y);
                     // 求和
-                    Vector2 Object_Summand_Position = Summand_Position + Data_Summand_Position + Object_Summand_Offset + Summanc_Offset;
+                    Godot.Vector2 Object_Summand_Position = Summand_Position + Data_Summand_Position + Object_Summand_Offset + Summanc_Offset;
                     // 开始实例化
                     LevelObject Instantiate = get_carddata.Scene.InstantiateOrNull<LevelObject>();
-                    
+                    // 生成类型不为Null时检测,如果生成物体不满足则重新选择
+                    if (Data.Summand_ObjectType[Summand_OffsetIndex] != ObjectType.Null)
+                    {
+                        if (Instantiate.Object_Type != Data.Summand_ObjectType[Summand_OffsetIndex])
+                        {
+                            Instantiate.Free();
+                            Instantiate = null;
+                            Summand_OffsetIndex = Data.random.RandiRange(0,Data.Summand_Position.Length - 1);
+                        }
+                    }
                     if (!Cheak.is_null<LevelObject>(Instantiate))
                     {
                         Node2D Get_Node = null;

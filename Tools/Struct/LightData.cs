@@ -7,8 +7,8 @@ namespace PVZEngine.Data;
 public partial class LightData : Resource
 {
     [Export] public Color LightColor = new(1,1,1,1);
-    [Export] public Vector2 Offset = new();
-    [Export] public Vector2 Scale = new(1,1);
+    [Export] public Godot.Vector2 Offset = new();
+    [Export] public Godot.Vector2 Scale = new(1,1);
     /// <summary>
     /// 物体路径
     /// </summary>

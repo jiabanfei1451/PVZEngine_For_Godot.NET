@@ -14,6 +14,7 @@ public partial class Lawn : ColorRect{
 	[Export] public Vector2I ArrayPosition = new Vector2I();
 	[Export] public TouchPad pad;
 	[Export] public Godot.Vector2 Array2D_Position = Godot.Vector2.Zero;
+	public PVZEngine.Data.Vector2i LawnIndex = new();
 	public CurrentObject Current_Object = null;
 	public bool Cheak_OK = false;
 	public class CurrentObject
@@ -270,6 +271,12 @@ public partial class Lawn : ColorRect{
 		pad = GetNode<TouchPad>("TouchPad");
 		pad.Focus_Joinvoid += focus_Join;
 		pad.Button_Pressedvoid += pressed;
+	}
+	public override void _ExitTree() {
+		base._ExitTree();
+		pad.Focus_Joinvoid -= focus_Join;
+		pad.Button_Pressedvoid -= pressed;
+		Get_GlobalNode.Get_Card_Data(GetTree()).Selected_Change -= Card_Change;
 	}
 	public override void _PhysicsProcess(double delta) {
 		base._PhysicsProcess(delta);

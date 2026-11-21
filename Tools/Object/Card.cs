@@ -93,7 +93,7 @@ public partial class Card : Control
 	/// <summary>
 	/// 脚本所处坐标
 	/// </summary>
-	[Export] public Godot.Vector2 Script_Position = Vector2.Zero;
+	[Export] public Godot.Vector2 Script_Position = Godot.Vector2.Zero;
 	/// <summary>
 	/// 停止无限循环
 	/// </summary>
@@ -101,7 +101,7 @@ public partial class Card : Control
 	/// <summary>
 	/// 脚本所处坐标
 	/// </summary>
-	[Export] public Godot.Vector2 Script_Position2 = Vector2.Zero;
+	[Export] public Godot.Vector2 Script_Position2 = Godot.Vector2.Zero;
 	/// <summary>
 	/// 缓动类型
 	/// </summary>
@@ -205,7 +205,7 @@ public partial class Card : Control
 			break;
 		//选卡分身模式
 		case Mode.is_Seleceed_Card:
-			Modulate = new Color(0,0,0,0);
+			Modulate = new Color(0,0,0,0.01f);
 			Mode_Data.gameing_Mode = new ModeObject.Gameing();
 			Mode_Data.gameing_Mode.Card_Data = Card_Data.Get_CardData(Card_Index);
 			DEBUG.Info.Print(Mode_Data.gameing_Mode.Card_Data);
@@ -270,7 +270,7 @@ public partial class Card : Control
 						}
 						#endregion
 						Show_CD_Label.Text = Math.Round(CD_Time,1).ToString();
-						CD_Mask.Scale = new Vector2(1,CD_Time / MAXCD_Time);
+						CD_Mask.Scale = new Godot.Vector2(1,CD_Time / MAXCD_Time);
 						CD_Time -= (float)delta;
 					}
 					else
@@ -281,7 +281,7 @@ public partial class Card : Control
 							Show_CD_Label.Visible = true;	
 							Show_CD_Label.Text = "不足";
 							CD_Mask.Visible = true;
-							CD_Mask.Scale = new Vector2(1,1);
+							CD_Mask.Scale = new Godot.Vector2(1,1);
 						}
 						else
 						{
@@ -352,7 +352,7 @@ public partial class Card : Control
 					Tween t = CreateTween();
 					Tween d = CreateTween();
 					Get_GlobalNode.Get_Card_Data(GetTree()).Remove_Card_Index(this);
-					t.TweenProperty(this,new NodePath(Control.PropertyName.Modulate),new Color(0,0,0,0),0.5).SetTrans(Tween.TransitionType.Sine);
+					t.TweenProperty(this,new NodePath(Control.PropertyName.Modulate),new Color(0,0,0,0.01f),0.5).SetTrans(Tween.TransitionType.Sine);
 					d.TweenProperty(this.Mode_Data.is_Selected_Card_Mode.Parent_Object,new NodePath(Control.PropertyName.Modulate),new Color(1,1,1,1),0.5).SetTrans(Tween.TransitionType.Sine);
 					await ToSignal(t,Tween.SignalName.Finished);
 					Mode_Data.is_Selected_Card_Mode.Parent_Object.Mode_Data.Selected_Card_Mode.is_Selected_Card_Object = null;

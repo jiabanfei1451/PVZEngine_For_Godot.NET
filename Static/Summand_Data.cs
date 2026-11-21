@@ -66,15 +66,12 @@ public class Summand_Data
     /// <summary>
     /// 生成草坪行范围
     /// </summary>
-    public SaveData.Struct.Vector2i YPosition_Offset {get;set;} = new(){X=0,Y=4};
+    public PVZEngine.Data.Vector2i[] YPosition_Offset {get;set;} = {PVZEngine.Data.Vector2i.New(0,4)};
     /// <summary>
     /// 生成坐标
     /// </summary>
-    public SaveData.Struct.Vector2 Summand_Position {get;set;} = new()
-    {
-        X = 80 * 9,
-        Y = 0
-    };
+    public PVZEngine.Data.Vector2[] Summand_Position {get;set;} = {PVZEngine.Data.Vector2.New(720,0)};
+    public PVZEngine.Enum.ObjectType[] Summand_ObjectType {get;set;} = {ObjectType.Normal};
     /// <summary>
     /// 生成列表
     /// </summary>

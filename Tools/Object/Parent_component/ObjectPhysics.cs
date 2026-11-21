@@ -137,7 +137,7 @@ public partial class ObjectPhysics : Node2D
     /// <summary>
     /// 物体类型
     /// </summary>
-    [Export] public ObjectType Object_Type = ObjectType.Normal;
+    [Export] public ObjectType Object_Type = ObjectType.Null;
     /// <summary>
     /// 对象内部ID
     /// </summary>
@@ -163,6 +163,10 @@ public partial class ObjectPhysics : Node2D
     /// 自动释放
     /// </summary>
     [Export] public bool Auto_Free_Reliant = true;
+    /// <summary>
+    /// 需要保存的属性
+    /// </summary>
+    [Export] public Godot.Collections.Array<String> Save_Property = new(){};
     /// <summary>
     /// 依赖物体UUID
     /// </summary>
