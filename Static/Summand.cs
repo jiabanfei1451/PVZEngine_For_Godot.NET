@@ -29,8 +29,9 @@ public static class Summand
     /// <summary>
     /// 生成物体
     /// </summary>
-    /// <param name="Number"></param>
+    /// <param name="Number">生成数量</param>
     /// <param name="Summand_OffsetIndex">指定的索引行当值为负值则随机</param>
+    /// <param name="Array_Index">草坪索引</param>
     public static async void Summand_Object(int Number,int Summand_OffsetIndex = -1,int Array_Index = 0)
     {
         // 条件判断
@@ -41,10 +42,14 @@ public static class Summand
             Summand_OffsetIndex = Data.Summand_Position.Length - 1;
         }
         if (Cheak.is_null<Summand_Data>(Summand.Data)){return;}
-        if (Cheak.is_null<List<ObjectID>>(Summand.Data.Summand_List)){return;}
+        if (Cheak.is_null<List<Save.ObjectID>>(Summand.Data.Summand_List)){return;}
         if (Data.Summand_List.Count <= 0){return;}
         if (Cheak.is_null<Level_Master_Script>(Level_Script.Level_Object)){return;}
         // 获取生成坐标
+        if (Array_Index > 0)
+        {
+            Array_Index = new System.Random().Next(0,Level_Script.Level_Object.LawnSummandData.Count - 1);
+        }
         Godot.Vector2 Summand_Position = Level_Script.Level_Object.LawnSummandData[Array_Index].Lawn_Spawn_Position;
         Godot.Vector2 Summand_Offset = Level_Script.Level_Object.LawnSummandData[Array_Index].Lawn_Spawn_Offect;
         System.Random Ran = new System.Random();
@@ -56,15 +61,17 @@ public static class Summand
             Data.Summand_ing = true;
             while (Data.Current_Summand_Number < Data.Max_Summand_Number)
             {
-                if (Data.Present_Object.Count < 50)
+                if (Data.Present_Object.Count < 50 && !Data.Stop_Summand)
                 {
+                    // 随机获取场景
                     int Temp_Count = Data.Summand_List.Count - 1;
-                    ObjectID Random_Get = null;
+                    Save.ObjectID Random_Get = null;
                     Random_Get = Data.Summand_List[Ran.Next(0,Temp_Count)]; 
                     PackedScene GetPacked = null;
                     if (!(Random_Get is null)){
                         GetPacked = Object_List.Get_Packed(Random_Get);
                     }
+                    // 如果场景不为 Null
                     if (!(GetPacked is null)){
                         GlobalData get_carddata = Card_Data.Get_CardData(GetPacked);
                         Godot.Vector2 Summand_Scale = new(1,1);
@@ -98,7 +105,7 @@ public static class Summand
                                 Summand_OffsetIndex = Data.random.RandiRange(0,Data.Summand_Position.Length - 1);
                             }
                         }
-                        if (!Cheak.is_null<LevelObject>(Instantiate))
+                        if (!Cheak.is_null<LevelObject>(Instantiate) && !Data.Stop_Summand)
                         {
                             Node2D Get_Node = null;
                             String layer = Instantiate.Default_generation_layer;
@@ -140,6 +147,10 @@ public static class Summand
                             await Task.Delay(300);
                         }
                     }
+                }
+                else
+                {
+                    await Task.Delay(100);
                 }
             }
             Data.Summand_ing = false;

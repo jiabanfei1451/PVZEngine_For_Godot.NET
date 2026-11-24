@@ -39,7 +39,7 @@ public partial class Object_List : Node
     /// </summary>
     /// <param name="ID_Object">实例ID</param>
     /// <returns></returns>
-    public static PackedScene Get_Packed(ObjectID ID_Object)
+    public static PackedScene Get_Packed(Save.ObjectID ID_Object)
     {
         var d = Get_GlobalNode.object_List;
         Godot.Collections.Array<String> Object_Name_ID = d.Object_Name_ID;
@@ -60,11 +60,11 @@ public partial class Object_List : Node
         return Object_PackedScene[Index];
     }
     
-    public static ObjectID Get_ID(PackedScene Index = null)
+    public static Save.ObjectID Get_ID(PackedScene Index = null)
     {
         int SceneIndex = Get_GlobalNode.object_List.Object_PackedScene.IndexOf(Index);
         if (SceneIndex >= 0){
-            ObjectID iD = new();
+            Save.ObjectID iD = new();
             iD.CH_Name = Get_GlobalNode.object_List.Object_CH_Name[SceneIndex];
             iD.Object_Name_ID = Get_GlobalNode.object_List.Object_Name_ID[SceneIndex];
             iD.Object_ID = SceneIndex;
@@ -79,13 +79,13 @@ public partial class Object_List : Node
     /// <param name="Index"></param>
     /// <param name="indexMode"></param>
     /// <returns></returns>
-    public static ObjectID Get_ID(String Index = "0",IndexMode indexMode = IndexMode.index)
+    public static Save.ObjectID Get_ID(String Index = "0",IndexMode indexMode = IndexMode.index)
     {
         var d = Get_GlobalNode.object_List;
         Godot.Collections.Array<String> Object_Name_ID = d.Object_Name_ID;
         Godot.Collections.Array<PackedScene> Object_PackedScene = d.Object_PackedScene;
         Godot.Collections.Array<String> Object_CH_Name = d.Object_CH_Name;
-        ObjectID iD = new();
+        Save.ObjectID iD = new();
         // 转化格式(假)
         if (indexMode == IndexMode.Name)
         {

@@ -209,7 +209,7 @@ public partial class ObjectPhysics : Node2D
             if (ObjectId is null){return;}
             GD.Print(ObjectId.PackedScenePath);
             PackedScene scene = ResourceScene.LoadScene(ObjectId.PackedScenePath);
-            ObjectId = Object_List.Get_ID(scene);
+            ObjectId = ObjectId.HandleSaveID(Object_List.Get_ID(scene));
             Auto_GetID = false;
         }
     }

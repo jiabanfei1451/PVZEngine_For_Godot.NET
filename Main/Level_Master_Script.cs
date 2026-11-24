@@ -364,14 +364,14 @@ public partial class Level_Master_Script : Node2D{
 			Level_Script.Equipment_Capable = p;
 		}else if(Seed_Why.IndexOf("/SaveData") != -1)
 		{
-			FileSystem.CreateDir("user://Saves");
-			FileStream Str = FileSystem.CreateFile("user://Saves/Playerdata.json");
+			FileSystem.CreateDir($"user://Saves/{PlayerData.Savedata.Name}");
+			FileStream Str = FileSystem.CreateFile($"user://Saves/{PlayerData.Savedata.Name}/Playerdata.json");
 			String DataText = JsonSerializer.Serialize<PVZEngine.Data.PlayerData.Data>(PVZEngine.Data.PlayerData.Savedata);
 			String HandleText = FileSystem.Handle_JsonText(DataText);
 			FileSystem.WriteFileandoff(Str,HandleText);
 		}else if(Seed_Why.IndexOf("/LoadData") != -1)
 		{
-			String Get_FileText = FileSystem.Get_FileText("user://Saves/Playerdata.json");
+			String Get_FileText = FileSystem.Get_FileText($"user://Saves{PlayerData.Savedata.Name}/Playerdata.json");
 			PlayerData.Savedata = JsonSerializer.Deserialize<PVZEngine.Data.PlayerData.Data>(Get_FileText);
 		}
 		else if(Seed_Why.IndexOf("/SaveInfo") != -1)

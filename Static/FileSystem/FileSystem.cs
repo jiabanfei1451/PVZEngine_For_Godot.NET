@@ -7,6 +7,24 @@ namespace PVZEngine.Static;
 public static class FileSystem
 {
     /// <summary>
+    /// 文件是否存在
+    /// </summary>
+    /// <param name="DirPath"></param>
+    public static bool HasFile(String DirPath)
+    {
+        String Godot_Path = ProjectSettings.GlobalizePath(DirPath);
+        return File.Exists(Godot_Path);
+    }
+    /// <summary>
+    /// 文件夹是否存在
+    /// </summary>
+    /// <param name="DirPath"></param>
+    public static bool HasDir(String DirPath)
+    {
+        String Godot_Path = ProjectSettings.GlobalizePath(DirPath);
+        return Directory.Exists(Godot_Path);
+    }
+    /// <summary>
     /// 创建文件夹
     /// </summary>
     /// <param name="DirPath"></param>
@@ -113,6 +131,24 @@ public static class FileSystem
                         Temp_Text += @"  ";
                     }
                     Temp_Text += "}";
+                    break;
+                case '[':
+                    TabNumber += 1;
+                    Temp_Text += "\n";
+                    for(int number = 0;number < TabNumber; number++)
+                    {
+                        Temp_Text += @"  ";
+                    }
+                    break;
+                case ']':
+                    TabNumber -= 1;
+                    Temp_Text = Temp_Text[0..(Temp_Text.Length - 1)];
+                    Temp_Text += "\n";
+                    for(int number = 0;number < TabNumber; number++)
+                    {
+                        Temp_Text += @"  ";
+                    }
+                    Temp_Text += "]";
                     break;
             }
         }

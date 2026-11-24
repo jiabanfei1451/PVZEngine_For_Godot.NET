@@ -5,16 +5,19 @@ using PVZEngine.Object.Module;
 using System.Threading.Tasks;
 using Godot;
 using PVZEngine.Static;
+using System;
 namespace PVZEngine.Data;
 /// <summary>
 /// 生成数据
 /// </summary>
 public class Summand_Data
 {
+    public int VersionBuild {get;set;} = 1;
+    public String Version {get;set;} = ProjectSettings.GetSetting("application/config/version").ToString();
     /// <summary>
     /// 生成物体ID
     /// </summary>
-    public List<List<ObjectID>> Summand_IDs {get;set;} = new List<List<ObjectID>>(){};
+    public List<List<Save.ObjectID>> Summand_IDs {get;set;} = new List<List<Save.ObjectID>>(){};
     /// <summary>
     /// 生成数量
     /// </summary>
@@ -38,11 +41,11 @@ public class Summand_Data
     /// <summary>
     /// 指定标签
     /// </summary>
-    public List<ObjectID> Detection_IDs = new(){};
+    public List<Save.ObjectID> Detection_IDs {get;set;} = new(){};
     /// <summary>
     /// 在场怪物
     /// </summary>
-    public List<LevelObject> Present_Object {get;set;} = new(){};
+    public List<LevelObject> Present_Object = new(){};
     /// <summary>
     /// 当前进度
     /// </summary>
@@ -71,11 +74,22 @@ public class Summand_Data
     /// 生成坐标
     /// </summary>
     public PVZEngine.Data.Vector2[] Summand_Position {get;set;} = {PVZEngine.Data.Vector2.New(720,0)};
+    /// <summary>
+    /// 生成类型
+    /// </summary>
     public PVZEngine.Enum.ObjectType[] Summand_ObjectType {get;set;} = {ObjectType.Normal};
     /// <summary>
     /// 生成列表
     /// </summary>
-    public List<ObjectID> Summand_List {get;set;} = new();
+    public List<Save.ObjectID> Summand_List {get;set;} = new();
+    /// <summary>
+    /// 草坪索引数组
+    /// </summary>
+    public List<int> Array_Indexs {get;set;} = new();
+    /// <summary>
+    /// 当前偏移索引数组
+    /// </summary>
+    public List<int> OffsetIndexs {get;set;} = new();
     /// <summary>
     /// 当前波次标签
     /// </summary>
@@ -88,6 +102,14 @@ public class Summand_Data
     /// 已生成数量
     /// </summary>
     public int Current_Summand_Number {get;set;} = -1;
+    /// <summary>
+    /// 当前偏移索引
+    /// </summary>
+    public int Current_Summand_OffsetIndex {get;set;} = -1;
+    /// <summary>
+    /// 当前草坪索引
+    /// </summary>
+    public int Current_Array_Index {get;set;} = -1;
     /// <summary>
     /// 等待下一波倒计时
     /// </summary>
@@ -129,9 +151,17 @@ public class Summand_Data
     /// </summary>
     public ulong State {get;set;} = 0;
     /// <summary>
+    /// 暂停生成
+    /// </summary>
+    public bool Stop_Summand {get;set;} = false;
+    /// <summary>
     /// 权重
     /// </summary>
     public List<ObjectID> Summand_weight {get;set;} = new();
+    /// <summary>
+    /// 在在场怪物表中移除指定怪物
+    /// </summary>
+    /// <param name="Object"></param>
     public void Remove_present_Object(LevelObject Object)
     {
         Present_Object.Remove(Object);
@@ -150,6 +180,8 @@ public class Summand_Data
         Summand_Number.Add(waveData.Number);
         WaveTags.Add(waveData.waveTag);
         Is_Wave.Add(waveData.IsWave);
+        OffsetIndexs.Add(waveData.Summand_OffsetIndex);
+        Array_Indexs.Add(waveData.Array_Index);
         Await_Is_Monster_Kills.Add(waveData.Await_Monster_Kill);
         if (waveData.Next_Wave_Timer == -1)
         {
@@ -172,6 +204,8 @@ public class Summand_Data
         if (Index >= Summand_IDs.Count){return;}
         Max_Summand_Number = Summand_Number[Index];
         Summand_List = Summand_IDs[Index];
+        Current_Array_Index = Array_Indexs[Index];
+        Current_Summand_OffsetIndex = OffsetIndexs[Index];
         if (Index >= Summand_IDs.Count - 1)
         {
             Is_Final_Wave = true;
@@ -251,12 +285,11 @@ public class Summand_Data
     /// 添加波次属性:
     /// add_ID Number 这些属性为必填项
     /// </summary>
-    public struct Add_WaveData()
-    {
+    public struct Add_WaveData(){
         /// <summary>
         /// 添加波次ID
         /// </summary>
-        public List<ObjectID> Add_ID;
+        public List<Save.ObjectID> Add_ID;
         /// <summary>
         /// 生成数量
         /// </summary>
@@ -269,6 +302,14 @@ public class Summand_Data
         /// 是否为大波
         /// </summary>
         public bool IsWave = false;
+        /// <summary>
+        /// 生成偏移索引
+        /// </summary>
+        public int Summand_OffsetIndex = -1;
+        /// <summary>
+        /// 数组索引
+        /// </summary>
+        public int Array_Index = -1;
         /// <summary>
         /// 是否等待所有怪物死亡
         /// </summary>

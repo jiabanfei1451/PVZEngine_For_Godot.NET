@@ -11,6 +11,10 @@ static class Level_Script : System.Object
 {
 	public static Level_Master_Script Level_Object = null;
 	/// <summary>
+	/// 关卡ID
+	/// </summary>
+	public static int LevelID = 0;
+	/// <summary>
 	/// 关卡名称
 	/// </summary>
 	public static String Level_Name = "第一天";

@@ -6,15 +6,16 @@ using PVZEngine.Static;
 
 namespace PVZEngine.Save;
 [GlobalClass]
-public partial class SaveLawnData : Resource
+public partial class SaveLawnData : SaveResource
 {
     [Export] public Godot.Collections.Array<Vector2I> Key {get;set;} = new(){};
     [Export] public Godot.Collections.Array<Godot.Collections.Array<String>> LawnKey {get;set;} = new(){};
     [Export] public Godot.Collections.Array<Godot.Collections.Array<PackedScene>> Scene {get;set;} = new(){};
     [Export] public Godot.Collections.Array<Godot.Collections.Array<String>> LawnKey2 {get;set;} = new(){};
     [Export] public Godot.Collections.Array<Godot.Collections.Array<PackedScene>> Scene2 {get;set;} = new(){};
-    public void SaveLawn()
+    public override void Save()
     {
+        base.Save();
         var GetLawn = NodeData.Get_Node<Node2D>("Lawn").GetTree().GetNodesInGroup("Lawn");
         int Index = 0;
         foreach(Lawn lawn in GetLawn)
@@ -60,8 +61,9 @@ public partial class SaveLawnData : Resource
             Index += 1;
         }
     }
-    public void LoadLawn()
+    public override void Load()
     {
+        base.Load();
         int SceneIndex = 0;
         GD.Print(Key);
         foreach(Vector2I Index in Key)
@@ -94,6 +96,7 @@ public partial class SaveLawnData : Resource
                     var Instantiate = Scene[SceneIndex][I].Instantiate<Equipment>();
                     NodeData.Get_Node<Node2D>("Equipment").AddChild(Instantiate);
                     GetLawn.Current_Object.Objects.Add(LawnKey[SceneIndex][I],Instantiate);
+                    Handle_Object(Instantiate);
                 }catch(Exception EX)
                 {
                     DEBUG.Info.PrintErr(EX);
@@ -111,6 +114,7 @@ public partial class SaveLawnData : Resource
                         var Instantiate = Scene2[SceneIndex][I].InstantiateOrNull<Equipment>();
                         NodeData.Get_Node<Node2D>("Equipment").AddChild(Instantiate);
                         GetLawn.Current_Object.Misc_Objects.Add(LawnKey2[SceneIndex][I],Instantiate);
+                        Handle_Object(Instantiate);
                     }catch(Exception EX)
                     {
                         DEBUG.Info.PrintErr(EX);
@@ -122,6 +126,14 @@ public partial class SaveLawnData : Resource
                 }
             }
             SceneIndex += 1;
+        }
+    }
+    public void Handle_Object(ObjectPhysics Handle)
+    {
+        if (Handle is MVZ2.Object.Equipment.Landmine)
+        {
+            ((MVZ2.Object.Equipment.Landmine)Handle).Timer.Stop(); 
+            ((MVZ2.Object.Equipment.Landmine)Handle).Excavated(); 
         }
     }
 }

@@ -81,6 +81,7 @@ public partial class Equipment : LevelObject
     /// 可驱动
     /// </summary>
     [Export] public bool drivable = false;
+    [Export] public bool PlayPlaced = true;
     public override void _PhysicsProcess(double delta) {
         base._PhysicsProcess(delta);
         if (!Enable){return;}
@@ -106,15 +107,17 @@ public partial class Equipment : LevelObject
         if (!Enable){return;}
         if (PlacedAudios.Count > 0)
         {
-            Audio_Plus audio = new();
-            audio.Audio_Type = Audio_Plus.Audio.Souds;
-            audio.Auto_Get_File = false;
-            audio.Auto_QueneFree = true;
-            audio.Autoplay = true;
-            audio.Stream = PlacedAudios.PickRandom();
-            GetTree().CurrentScene.AddChild(audio);
-            audio.Play();
-            
+            if (PlayPlaced == true){
+                Audio_Plus audio = new();
+                audio.Audio_Type = Audio_Plus.Audio.Souds;
+                audio.Auto_Get_File = false;
+                audio.Auto_QueneFree = true;
+                audio.Autoplay = true;
+                audio.Stream = PlacedAudios.PickRandom();
+                GetTree().CurrentScene.AddChild(audio);
+                audio.Play();
+                PlayPlaced = false;
+            }
         }
         Health_Reduce += This_Damage;
         Kill += This_Kill;
