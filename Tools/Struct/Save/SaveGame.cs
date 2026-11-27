@@ -26,27 +26,35 @@ public partial class SaveGame : Resource
     }
     public void Save(String path = "S.res")
     {
-        String p = "user://" + $"Saves/{PlayerData.Savedata.Name}/LevelSave/{Level_Script.Level_Object.Chapter_Name}{Level_Script.Level_Name}{Level_Script.LevelID}/" + path;
+        String p = "user://" + $"Saves/{PlayerData.Savedata.Name}/LevelSave/{Level_Script.Level_Object.Chapter_Name}{Level_Script.Data.Level_Name}{Level_Script.Data.LevelID}/" + path;
         path = ProjectSettings.GlobalizePath(p);
-        String p2 = "user://" + $"Saves/{PlayerData.Savedata.Name}/LevelSave/{Level_Script.Level_Object.Chapter_Name}{Level_Script.Level_Name}{Level_Script.LevelID}/";
+        String p2 = "user://" + $"Saves/{PlayerData.Savedata.Name}/LevelSave/{Level_Script.Level_Object.Chapter_Name}{Level_Script.Data.Level_Name}{Level_Script.Data.LevelID}/";
         String path2 = ProjectSettings.GlobalizePath(p2);
         FileSystem.CreateDir(path2);
-
-        String SaveSummandDataPath = p2+"SummandData.json";
-        SummandData = Summand.Data;
-        String JsonText = JsonSerializer.Serialize(SummandData);
-        var FileS = FileSystem.CreateFile(SaveSummandDataPath);
-        String JS = FileSystem.Handle_JsonText(JsonText);
-        FileSystem.WriteFileandoff(FileS,JS);
-
+        try{
+            String SaveSummandDataPath = p2+"SummandData.json";
+            SummandData = Summand.Data;
+            String JsonText = JsonSerializer.Serialize(SummandData);
+            var FileS = FileSystem.CreateFile(SaveSummandDataPath);
+            String JS = FileSystem.Handle_JsonText(JsonText);
+            FileSystem.WriteFileandoff(FileS,JS);
+        }
+        catch(Exception EX)
+        {
+            DEBUG.Info.Print(EX);
+        }
+        finally
+        {
+            
+        }
         DEBUG.Info.Print(path);
         var e = ResourceSaver.Save(this,path);
     }
     public static SaveGame Load(String path = "S.res")
     {
-        String p = "user://" +  $"Saves/{PlayerData.Savedata.Name}/LevelSave/{Level_Script.Level_Object.Chapter_Name}{Level_Script.Level_Name}{Level_Script.LevelID}/" + path;
+        String p = "user://" +  $"Saves/{PlayerData.Savedata.Name}/LevelSave/{Level_Script.Level_Object.Chapter_Name}{Level_Script.Data.Level_Name}{Level_Script.Data.LevelID}/" + path;
         path = ProjectSettings.GlobalizePath(p);
-        String p2 = "user://" + $"Saves/{PlayerData.Savedata.Name}/LevelSave/{Level_Script.Level_Object.Chapter_Name}{Level_Script.Level_Name}{Level_Script.LevelID}/";
+        String p2 = "user://" + $"Saves/{PlayerData.Savedata.Name}/LevelSave/{Level_Script.Level_Object.Chapter_Name}{Level_Script.Data.Level_Name}{Level_Script.Data.LevelID}/";
         Summand_Data data;
         try{
             var jsonText = FileSystem.Get_FileText(p2);

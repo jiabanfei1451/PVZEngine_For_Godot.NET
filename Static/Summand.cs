@@ -187,7 +187,7 @@ public static class Summand
         Cheak_Summand();
         if (Cheak_Tag())
         {
-            GD.Print("你过关");
+            DEBUG.Info.Print("你过关");
             While_Ing = false;
         }
     }

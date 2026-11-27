@@ -18,7 +18,7 @@ public partial class SaveMonster : SaveResource
         foreach(var Node in GetAllMonster)
         {
             if (Node.GetNode("..") is Node2D){
-                GD.Print(Node.GetPath(),"Save GlobalPosition:",((Node2D)Node).GlobalPosition,"Position:",((Node2D)Node).Position);
+                DEBUG.Info.Print(Node.GetPath(),"Save GlobalPosition:",((Node2D)Node).GlobalPosition,"Position:",((Node2D)Node).Position);
                 PackedScene Scene = new();
                 Scene.Pack(Node);
                 Scenes.Add(Scene);

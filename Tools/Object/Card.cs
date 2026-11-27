@@ -5,6 +5,7 @@ using PVZEngine.Module;
 using PVZEngine.Static;
 using DEBUG;
 using System;
+using PVZEngine.Enum;
 using PVZEngine.Data;
 namespace PVZEngine.UI{
 /// <summary>
@@ -276,7 +277,7 @@ public partial class Card : Control
 					else
 					{	
 						#region 显示状态切换
-						if (Level_Script.Equipment_Capable < Sonsume)
+						if (Level_Script.Data.Equipment_Capable < Sonsume)
 						{
 							Show_CD_Label.Visible = true;	
 							Show_CD_Label.Text = "不足";
@@ -397,13 +398,13 @@ public partial class Card : Control
 	/// </summary>
 	public void _Selected()
 	{
-		if (Level_Script.Use_Prop != Level_Script.Prop.Not)
+		if (Level_Script.Data.Use_Prop != Prop.Not)
 		{
-			Level_Script.Use_Prop = Level_Script.Prop.Not;			
+			Level_Script.Data.Use_Prop = Prop.Not;			
 		}
 		Data.GlobalData globalData = Card_Data.Get_CardData(Card_Index);
 
-		if (Level_Script.Equipment_Capable < globalData.Sonsume || CDing == true)
+		if (Level_Script.Data.Equipment_Capable < globalData.Sonsume || CDing == true)
 		{
 			GetNode<Audio_Plus>("buzzer").Play();
 			return;
@@ -431,7 +432,7 @@ public partial class Card : Control
 			}
 			else
 			{
-				Level_Script.Equipment_Capable -= globalData.Sonsume;
+				Level_Script.Data.Equipment_Capable -= globalData.Sonsume;
 				NodeData.Get_Node<Level_Master_Script>("Level").EmitSignal(Level_Master_Script.SignalName.Selected_EventCard,globalData.EventTag);
 			}
 	}

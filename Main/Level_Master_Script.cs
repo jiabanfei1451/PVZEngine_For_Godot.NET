@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using MVZ2.Object.Interactive_Objects;
 
 namespace PVZEngine;
 /// <summary>
@@ -173,6 +174,7 @@ public partial class Level_Master_Script : Node2D{
 	/// </summary>
 	public override async void _Ready() {
 		base._Ready();
+		Level_Script.initialize();
 		Reset_Lawn_Index();
 		Level_Script.Level_Object = this;
 		LawnScene = ResourceScene.LoadScene("uid://dim8rk13omwvv");
@@ -219,9 +221,9 @@ public partial class Level_Master_Script : Node2D{
 	/// <param name="delta"></param>
 	public override void _PhysicsProcess(double delta) {
 		base._PhysicsProcess(delta);
-		if (Temp_audio_Scale != Level_Script.audio_Scale)
+		if (Temp_audio_Scale != Level_Script.Data.audio_Scale)
 		{
-			Temp_audio_Scale = Level_Script.audio_Scale;
+			Temp_audio_Scale = Level_Script.Data.audio_Scale;
 			Temp_audio_await_timer = 3;
 		}
 		else
@@ -231,9 +233,9 @@ public partial class Level_Master_Script : Node2D{
 			}
 			else
 			{
-				if (Level_Script.audio_Scale != 0)
+				if (Level_Script.Data.audio_Scale != 0)
 				{
-					Level_Script.audio_Scale = 0;
+					Level_Script.Data.audio_Scale = 0;
 				}
 			}
 		}
@@ -361,7 +363,7 @@ public partial class Level_Master_Script : Node2D{
 		{
 			string ps = Regex.Replace(Seed_Why,@"[^0-9]+","");
 			short p = (short)ps.ToInt();
-			Level_Script.Equipment_Capable = p;
+			Level_Script.Data.Equipment_Capable = p;
 		}else if(Seed_Why.IndexOf("/SaveData") != -1)
 		{
 			FileSystem.CreateDir($"user://Saves/{PlayerData.Savedata.Name}");
@@ -379,7 +381,7 @@ public partial class Level_Master_Script : Node2D{
 			DEBUG.Info.Save_Info("C:\\Info.txt");
 		}else if(Seed_Why.IndexOf("/Star") != -1)
 		{
-			Level_Script.Star_Fragment = PlayerData.Savedata.Max_Star_Fragment;
+			Level_Script.Data.Star_Fragment = PlayerData.Savedata.Max_Star_Fragment;
 		}else if(Seed_Why.IndexOf("/S") != -1)
 		{
 			PVZEngine.Save.SaveGame game = new();
@@ -389,6 +391,8 @@ public partial class Level_Master_Script : Node2D{
 		{
 			PVZEngine.Save.SaveGame game = PVZEngine.Save.SaveGame.Load();
 			game.LoadLevel();
+		}else if(Seed_Why.IndexOf("/R") != -1)
+		{
 		}
 	}
 	#region 草坪方法

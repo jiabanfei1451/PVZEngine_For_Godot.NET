@@ -1,7 +1,7 @@
 using System;
 using Game;
 using Godot;
-using PVZEngine.Data;
+using PVZEngine.Enum;
 using PVZEngine.Module;
 using PVZEngine.Static;
 namespace PVZEngine.Object.Module;
@@ -85,7 +85,7 @@ public partial class Equipment : LevelObject
     public override void _PhysicsProcess(double delta) {
         base._PhysicsProcess(delta);
         if (!Enable){return;}
-        if (Level_Script.Use_Prop == Level_Script.Prop.Not){Modulate = new Color(1,1,1,1);return;}
+        if (Level_Script.Data.Use_Prop == Prop.Not){Modulate = new Color(1,1,1,1);return;}
         if (Is_Selected_This())
         {
             Modulate = new Color(2,2,2,1);
@@ -160,32 +160,32 @@ public partial class Equipment : LevelObject
     public virtual void Pressed()
     {
         if (!Enable){return;}
-        if (Level_Script.Use_Prop == Level_Script.Prop.iron_pickaxe)
+        if (Level_Script.Data.Use_Prop == Prop.iron_pickaxe)
         {
             if (Is_Selected_This() == true)
             {
-                Level_Script.Use_Prop = Level_Script.Prop.Not;
+                Level_Script.Data.Use_Prop = Prop.Not;
                 This_Kill();
             }
         }
-        if (Level_Script.Use_Prop == Level_Script.Prop.Star_Fragment)
+        if (Level_Script.Data.Use_Prop == Prop.Star_Fragment)
         {
             if (Is_Selected_This() == true)
             {
-                if (Level_Script.Star_Fragment > 0)
+                if (Level_Script.Data.Star_Fragment > 0)
                 {
                     ActivateEvent();
                 }
             }
         }
-        if (Level_Script.Use_Prop == Level_Script.Prop.Equipment_capable)
+        if (Level_Script.Data.Use_Prop == Prop.Equipment_capable)
         {
             if (Is_Selected_This() == true)
             {
-                if (Level_Script.Equipment_Capable >= Driver_required)
+                if (Level_Script.Data.Equipment_Capable >= Driver_required)
                 {
-                    Level_Script.Equipment_Capable -= Driver_required;
-                    Level_Script.Use_Prop = Level_Script.Prop.Not;
+                    Level_Script.Data.Equipment_Capable -= Driver_required;
+                    Level_Script.Data.Use_Prop = Prop.Not;
                     EmitSignalDriver_Equipment();
                 }
             }
@@ -193,9 +193,9 @@ public partial class Equipment : LevelObject
     }
     public virtual void ActivateEvent()
     {
-        GD.Print(Level_Script.Star_Fragment);
-        Level_Script.Star_Fragment -= 1;
-        Level_Script.Use_Prop = Level_Script.Prop.Not;
+        DEBUG.Info.Print(Level_Script.Data.Star_Fragment);
+        Level_Script.Data.Star_Fragment -= 1;
+        Level_Script.Data.Use_Prop = Prop.Not;
         Audio_Plus audio = new();
         audio.Audio_Type = Audio_Plus.Audio.Souds;
         audio.fade_Time = 0;
@@ -256,14 +256,14 @@ public partial class Equipment : LevelObject
     {
         if (Level_Script.Selected_Object == this)
         {
-            if (Level_Script.Use_Prop == Level_Script.Prop.Star_Fragment && Activatable && !Activate)
+            if (Level_Script.Data.Use_Prop == Prop.Star_Fragment && Activatable && !Activate)
             {
                 return true;
             }
-            if (Level_Script.Use_Prop == Level_Script.Prop.Equipment_capable && drivable)
+            if (Level_Script.Data.Use_Prop == Prop.Equipment_capable && drivable)
             {
                 return true;
-            }if (Level_Script.Use_Prop == Level_Script.Prop.iron_pickaxe)
+            }if (Level_Script.Data.Use_Prop == Prop.iron_pickaxe)
             {
                 return true;
             }

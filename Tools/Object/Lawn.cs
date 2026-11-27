@@ -360,9 +360,9 @@ public partial class Lawn : ColorRect{
 		}
 		if (Sousume == true)
 		{
-			if (Level_Script.Equipment_Capable >= GetCard_Data.Sonsume)
+			if (Level_Script.Data.Equipment_Capable >= GetCard_Data.Sonsume)
 			{
-				Level_Script.Equipment_Capable -= GetCard_Data.Sonsume;
+				Level_Script.Data.Equipment_Capable -= GetCard_Data.Sonsume;
 				GetCard.Selected_raw_Object.Start_CD();
 			}
 			else

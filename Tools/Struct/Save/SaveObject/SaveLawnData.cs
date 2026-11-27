@@ -65,10 +65,10 @@ public partial class SaveLawnData : SaveResource
     {
         base.Load();
         int SceneIndex = 0;
-        GD.Print(Key);
+        DEBUG.Info.Print(Key);
         foreach(Vector2I Index in Key)
         {
-            GD.Print(Index);
+            DEBUG.Info.Print(Index);
             Lawn GetLawn = Level_Script.Level_Object.Lawn_Data[Index.Y][Index.X];
             try{
                 foreach(var p in Level_Script.Level_Object.Lawn_Data[Index.Y][Index.X].Current_Object.Objects.Values)

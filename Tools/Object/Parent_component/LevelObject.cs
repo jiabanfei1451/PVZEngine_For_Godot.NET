@@ -130,6 +130,11 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     /// 排除阵营
     /// </summary>
     [Export] public Godot.Collections.Array<StringName> Exclude_Group {get;set;} = LevelCheckdefault.defaultExclude_Group();
+    /// <summary>
+    /// 完成初始化
+    /// </summary>
+    [ExportGroup("Misc")]
+    [Export] public bool InitializationEnd = false; 
     public Level_Master_Script Level_Object = null;
     internal bool Connect_Kill_Signal = false;
     public override void _ExitTree()
@@ -258,7 +263,7 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
     /// <summary>
     /// 自身攻击
     /// </summary>
-    public virtual void This_Damage(){}
+    public virtual void This_Damage(int Damage = 0){}
     /// <summary>
     /// 移除已检测到的其中一位物体
     /// </summary>
@@ -300,7 +305,7 @@ public partial class LevelObject : PVZEngine.Object.Module.ObjectPhysics
             HP = Max_HP;
         }
         if (HP > Min_HP){
-            EmitSignal("Health_Reduce",Damage_Object);
+            EmitSignalHealth_Reduce(Damage_Object);
         }
         else
         {
